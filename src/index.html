@@ -4,9 +4,71 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Scientific Calculator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <div class="calculator">
+    <aside class="mode-selection">
+      <button class="mode-button mode-1">Standart</button>
+      <button class="mode-button mode-2">Scientific</button>
+      <button class="mode-button mode-3">Date Calculation</button>
+      <button class="mode-button mode-4">Currency</button>
+      <button class="mode-button mode-5">Weight & Mass</button>
+      <button class="mode-button mode-6">Temperature</button>
+      <button class="mode-button mode-7">Area</button>
+      <button class="mode-button mode-8">Time</button>
+      <button class="mode-button mode-9">Power</button>
+      <button class="mode-button mode-10">Data</button>
+    </aside>
+
+    <div class="top-bar">
+      <button class="change-mode-button top-button">
+        <img src="/src/Images/burger-icon.svg" alt="mode" class="icon icon-burger-menu">
+      </button>
+
+      <div class="current-mode-title">
+        <h1 class="title">Standart</h1>
+      </div>
+
+      <button class="history-button top-button">
+        <img src="/src/Images/history-icon.png" alt="history" class="icon icon-history">
+      </button>
+    </div>
+
+    <div class="display">
+      <h2 class="expression"></h2>
+      <h1 class="result">0</h1>
+      <span class="line"></span>
+    </div>
+
+    <div class="numpad">
+      <button class="numpad-button button-clear">C</button>
+      <button class="numpad-button button-operator">%</button>
+      <button class="numpad-button button-delete">
+        <img src="/src/Images/delete-icon.svg" alt="del">
+      </button>
+      <button class="numpad-button button-operator">÷</button>
+      <button class="numpad-button button-number">7</button>
+      <button class="numpad-button button-number">8</button>
+      <button class="numpad-button button-number">9</button>
+      <button class="numpad-button button-operator">×</button>
+      <button class="numpad-button button-number">4</button>
+      <button class="numpad-button button-number">5</button>
+      <button class="numpad-button button-number">6</button>
+      <button class="numpad-button button-operator">+</button>
+      <button class="numpad-button button-number">1</button>
+      <button class="numpad-button button-number">2</button>
+      <button class="numpad-button button-number">3</button>
+      <button class="numpad-button button-operator">-</button>
+      <button class="numpad-button button-number extended-button">0</button>
+      <button class="numpad-button button-decimal">.</button>
+      <button class="numpad-button button-equals">=</button>
+    </div>
+  </div>
+
   <script src="script.js"></script>
 </body>
 </html>
