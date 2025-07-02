@@ -50,6 +50,7 @@ function setFittedFontSize(element, elementBasicFontSize) {
 
 openModeSelection.addEventListener('click', () => {
   showElement(modeSelectionAside);
+  modeSelectionAside.style.transform = 'translateX(0)';
   console.log('openSelection');
 })
 
@@ -57,7 +58,8 @@ selectStandartMode.addEventListener('click', () => {
   topBarTitle.innerText = 'Standart';
   showElement(display);
   showElement(numpad);
-  hideElement(modeSelectionAside);
+  modeSelectionAside.style.transform = 'translateX(-100%)';
+  setTimeout(() => hideElement(modeSelectionAside), 200);
 })
 
 // standart and sciensific calculator

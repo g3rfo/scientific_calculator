@@ -39,6 +39,7 @@ h1, h2, p {
   height: 850px;
   width: 415px;
   background: var(--grey-color);
+  overflow: hidden;
 }
 
 /* ---mode-selection-aside--- */
@@ -55,6 +56,9 @@ h1, h2, p {
   opacity: 0;
   pointer-events: none;
   z-index: 1;
+
+  transition: transform 0.2s ease;
+  transform: translateX(-100%);
 }
 
 .mode-button {
