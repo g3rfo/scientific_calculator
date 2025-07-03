@@ -13,7 +13,9 @@ const expressionFontSize = getPxToNumberValue(getComputedStyle(expression).fontS
 const resultFontSize = getPxToNumberValue(getComputedStyle(result).fontSize);
 // numpad
 const numpad = document.querySelector('.numpad');
-
+const numpadButtons = document.querySelectorAll('.numpad-button');
+const extendedButton = document.querySelector('.extended-button');
+const scientificModeButtons = document.querySelectorAll('.scientific-mode');
 
 // common functions
 
@@ -40,6 +42,38 @@ function showElement(element) {
 function hideModeSelection() {
   modeSelectionAside.style.transform = 'translateX(-100%)';
   setTimeout(() => hideElement(modeSelectionAside), 300);
+}
+
+function displayModeStandart() {
+  numpad.style.gridTemplateRows = 'repeat(5, 80px)';
+  numpad.style.gridTemplateColumns = 'repeat(4, 80px)';
+  numpad.style.gap = '21px 15px';
+
+  extendedButton.style.gridColumn = '1 / 3';
+
+  numpadButtons.forEach(button => {
+    button.style.fontSize = '3rem';
+  });
+  
+  scientificModeButtons.forEach(button => {
+    button.style.display = 'none';
+  });
+}
+
+function displayModeScientific() {
+  numpad.style.gridTemplateRows = 'repeat(7, 60px)';
+  numpad.style.gridTemplateColumns = 'repeat(5, 60px)';
+  numpad.style.gap = '10px 15px';
+
+  extendedButton.style.gridColumn = '2 / 4';
+
+  numpadButtons.forEach(button => {
+    button.style.fontSize = '2rem';
+  });
+
+  scientificModeButtons.forEach(button => {
+    button.style.display = 'block';
+  });
 }
 
 function getPxToNumberValue(value) {
@@ -69,6 +103,7 @@ selectStandartMode.addEventListener('click', () => {
   topBarTitle.innerText = 'Standart';
   showElement(display);
   showElement(numpad);
+  displayModeStandart();
   hideModeSelection();
 })
 
@@ -76,6 +111,7 @@ selectScientificMode.addEventListener('click', () => {
   topBarTitle.innerText = 'Scientific';
   showElement(display);
   showElement(numpad);
+  displayModeScientific();
   hideModeSelection();
 })
 
@@ -186,30 +222,32 @@ numpad.addEventListener('click', (event) => {
   
   // calculate
   if (event.target.closest('.button-equals')) {
-    if (!isLastOperationWasPercentage) {
-      expressionToCalc += currentResultText;
-      expression.textContent += currentResultText + ' = ';
-    } else {
-      expression.textContent += ' = ';
-    }
-    
-    setFittedFontSize(expression, expressionFontSize);
-
-    try {
-      const evalResult = eval(expressionToCalc);
-      if (isNaN(evalResult)) {
-        result.textContent = 'Error';
+    if (currentExpressionText.charAt(currentExpressionText.length - 2) !== '=') {
+      if (!isLastOperationWasPercentage) {
+        expressionToCalc += currentResultText;
+        expression.textContent += currentResultText + ' = ';
       } else {
-        result.textContent = evalResult;
+        expression.textContent += ' = ';
       }
-    } catch (error) {
-      result.textContent = 'Error';
+    
+      setFittedFontSize(expression, expressionFontSize);
+
+      try {
+        const evalResult = eval(expressionToCalc);
+        if (isNaN(evalResult)) {
+          result.textContent = 'Error';
+        } else {
+          result.textContent = evalResult;
+        }
+      } catch (error) {
+        result.textContent = 'Error';
+      }
+
+      setFittedFontSize(result, resultFontSize);
+
+      console.log(currentExpressionText);
+      console.log(expressionToCalc);
     }
-
-    setFittedFontSize(result, resultFontSize);
-
-    console.log(currentExpressionText);
-    console.log(expressionToCalc);
   }
 });
 

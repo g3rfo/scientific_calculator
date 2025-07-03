@@ -29,6 +29,11 @@ h1, h2, p {
   color: var(--white-color);
 }
 
+sup {
+  font-size: medium;
+  transform: translateY(-25%);
+}
+
 .calculator {
   position: relative;
   padding: 24px;
@@ -161,9 +166,18 @@ h1, h2, p {
   transition: transform 0.3s ease;
 }
 
+.scientific-mode {
+  display: none;
+}
+
 .button-clear {
   background: var(--yellow-color);
   color: var(--grey-color);
+}
+
+.button-delete-img {
+  height: 80%;
+  width: 80%;
 }
 
 .extended-button {
