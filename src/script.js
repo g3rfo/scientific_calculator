@@ -4,10 +4,13 @@ const topBarTitle = document.querySelector('.title');
 // mode-selection-aside
 const modeSelectionAside = document.querySelector('.mode-selection');
 const selectStandartMode = document.querySelector('.mode-1');
+const selectScientificMode = document.querySelector('.mode-2');
 // display
 const display = document.querySelector('.display');
 const expression = document.querySelector('.expression');
 const result = document.querySelector('.result');
+const expressionFontSize = getPxToNumberValue(getComputedStyle(expression).fontSize);
+const resultFontSize = getPxToNumberValue(getComputedStyle(result).fontSize);
 // numpad
 const numpad = document.querySelector('.numpad');
 
@@ -34,6 +37,11 @@ function showElement(element) {
   }
 }
 
+function hideModeSelection() {
+  modeSelectionAside.style.transform = 'translateX(-100%)';
+  setTimeout(() => hideElement(modeSelectionAside), 300);
+}
+
 function getPxToNumberValue(value) {
   return Number(value.slice(0, -2));
 }
@@ -41,9 +49,9 @@ function getPxToNumberValue(value) {
 function setFittedFontSize(element, elementBasicFontSize) {
   textFit(element, {
     reProcess: true,
+    minFontSize: elementBasicFontSize / 2,
     maxFontSize: elementBasicFontSize
   })
-  console.log(elementBasicFontSize);
 }
 
 // change-mode handling
@@ -51,15 +59,24 @@ function setFittedFontSize(element, elementBasicFontSize) {
 openModeSelection.addEventListener('click', () => {
   showElement(modeSelectionAside);
   modeSelectionAside.style.transform = 'translateX(0)';
-  console.log('openSelection');
+  setTimeout(() => {
+    hideElement(display);
+    hideElement(numpad);
+  }, 300);
 })
 
 selectStandartMode.addEventListener('click', () => {
   topBarTitle.innerText = 'Standart';
   showElement(display);
   showElement(numpad);
-  modeSelectionAside.style.transform = 'translateX(-100%)';
-  setTimeout(() => hideElement(modeSelectionAside), 200);
+  hideModeSelection();
+})
+
+selectScientificMode.addEventListener('click', () => {
+  topBarTitle.innerText = 'Scientific';
+  showElement(display);
+  showElement(numpad);
+  hideModeSelection();
 })
 
 // standart and sciensific calculator
@@ -76,7 +93,7 @@ numpad.addEventListener('click', (event) => {
     expression.textContent = '';
     result.textContent = '0';
     expressionToCalc = '';
-    setFittedFontSize(result, getPxToNumberValue(getComputedStyle(result).fontSize));
+    setFittedFontSize(result, resultFontSize);
   }
   
   // delete
@@ -89,7 +106,7 @@ numpad.addEventListener('click', (event) => {
       } else {
         result.textContent = currentResultText.slice(0, textLength - 1);
       }
-      setFittedFontSize(result, getPxToNumberValue(getComputedStyle(result).fontSize));
+      setFittedFontSize(result, resultFontSize);
     }
   } 
   
@@ -103,7 +120,7 @@ numpad.addEventListener('click', (event) => {
       result.textContent += symbol;
     }
 
-    setFittedFontSize(result, getPxToNumberValue(getComputedStyle(result).fontSize));
+    setFittedFontSize(result, resultFontSize);
     console.log(expressionToCalc);
   }
 
@@ -113,7 +130,7 @@ numpad.addEventListener('click', (event) => {
     } else {
       result.textContent += '.';
     }
-    setFittedFontSize(result, getPxToNumberValue(getComputedStyle(result).fontSize));
+    setFittedFontSize(result, resultFontSize);
   }
   
   if (event.target.closest('.button-operator')) {
@@ -162,9 +179,9 @@ numpad.addEventListener('click', (event) => {
       expressionToCalc += ' ' + operator + ' ';
       expression.textContent += currentResultText + ' ' + symbol + ' ';
     }
-    setFittedFontSize(expression, getPxToNumberValue(getComputedStyle(expression).fontSize));
+    setFittedFontSize(expression, expressionFontSize);
     result.textContent = '0';
-    setFittedFontSize(result, getPxToNumberValue(getComputedStyle(result).fontSize));
+    setFittedFontSize(result, resultFontSize);
   } 
   
   // calculate
@@ -176,7 +193,7 @@ numpad.addEventListener('click', (event) => {
       expression.textContent += ' = ';
     }
     
-    setFittedFontSize(expression, getPxToNumberValue(getComputedStyle(expression).fontSize));
+    setFittedFontSize(expression, expressionFontSize);
 
     try {
       const evalResult = eval(expressionToCalc);
@@ -189,7 +206,7 @@ numpad.addEventListener('click', (event) => {
       result.textContent = 'Error';
     }
 
-    setFittedFontSize(result, getPxToNumberValue(getComputedStyle(result).fontSize));
+    setFittedFontSize(result, resultFontSize);
 
     console.log(currentExpressionText);
     console.log(expressionToCalc);
