@@ -118,7 +118,7 @@ sup {
 
 .fit-text-wrap {
   width: 100%;
-  text-align: end;
+  text-align: right;
   overflow-x: auto;
   overflow-y: hidden;
 }
@@ -132,13 +132,11 @@ sup {
 }
 
 .expression {
-  display: block;
-  font-size: 2.25rem;
+  font-size: 2rem;
   line-height: 150%;
 }
 
 .result {
-  display: block;
   font-size: 3.5rem;
   line-height: 150%;
 }

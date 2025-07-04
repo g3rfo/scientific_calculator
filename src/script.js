@@ -17,6 +17,10 @@ const numpadButtons = document.querySelectorAll('.numpad-button');
 const extendedButton = document.querySelector('.extended-button');
 const scientificModeButtons = document.querySelectorAll('.scientific-mode');
 
+// math
+const PI = Math.PI;
+const E = Math.E;
+
 // common functions
 
 function isVisible(element) {
@@ -39,6 +43,10 @@ function showElement(element) {
   }
 }
 
+function resetDisplayValue(element, value) {
+  element.textContent = value;
+}
+
 function hideModeSelection() {
   modeSelectionAside.style.transform = 'translateX(-100%)';
   setTimeout(() => hideElement(modeSelectionAside), 300);
@@ -58,6 +66,9 @@ function displayModeStandart() {
   scientificModeButtons.forEach(button => {
     button.style.display = 'none';
   });
+
+  resetDisplayValue(expression, '');
+  resetDisplayValue(result, '0');
 }
 
 function displayModeScientific() {
@@ -74,6 +85,9 @@ function displayModeScientific() {
   scientificModeButtons.forEach(button => {
     button.style.display = 'block';
   });
+
+  resetDisplayValue(expression, '');
+  resetDisplayValue(result, '0');
 }
 
 function getPxToNumberValue(value) {
@@ -84,7 +98,8 @@ function setFittedFontSize(element, elementBasicFontSize) {
   textFit(element, {
     reProcess: true,
     minFontSize: elementBasicFontSize / 2,
-    maxFontSize: elementBasicFontSize
+    maxFontSize: elementBasicFontSize,
+    detectMultiLine: false
   })
 }
 
@@ -158,6 +173,17 @@ numpad.addEventListener('click', (event) => {
 
     setFittedFontSize(result, resultFontSize);
     console.log(expressionToCalc);
+  }
+
+  // math constants
+  if (event.target.closest('.button-const')) {
+    if (event.target.textContent === 'e') {
+      result.textContent = E;
+    } else {
+      result.textContent = PI;
+    }
+    
+    setFittedFontSize(result, resultFontSize);
   }
 
   if (event.target.closest('.button-decimal')) {
