@@ -134,6 +134,8 @@ selectScientificMode.addEventListener('click', () => {
 
 let expressionToCalc = '';
 let isLastOperationWasPercentage = false;
+let leftBracketsNum = 0;
+let rightBracketsNum = 0;
 
 numpad.addEventListener('click', (event) => {
   let currentResultText = result.textContent;
@@ -172,7 +174,6 @@ numpad.addEventListener('click', (event) => {
     }
 
     setFittedFontSize(result, resultFontSize);
-    console.log(expressionToCalc);
   }
 
   // math constants
@@ -186,6 +187,30 @@ numpad.addEventListener('click', (event) => {
     setFittedFontSize(result, resultFontSize);
   }
 
+  // brackets
+  if (event.target.closest('.button-brackets')) {
+    if (event.target.textContent === '(') {
+      expression.textContent += ' (';
+      expressionToCalc += '(';
+      leftBracketsNum ++;
+    } else {
+      if (leftBracketsNum > rightBracketsNum) {
+        if (currentExpressionText.charAt(currentExpressionText.length - 2) === ')') {
+          expression.textContent += ') ';
+          expressionToCalc += ')';
+        } else {
+          expression.textContent += currentResultText + ') ';
+          expressionToCalc += currentResultText + ')';
+        }
+
+        rightBracketsNum ++;
+      }
+    }
+
+    setFittedFontSize(result, resultFontSize);
+  }
+
+  // decimal dot
   if (event.target.closest('.button-decimal')) {
     if (currentResultText.charAt(currentResultText.length - 1) === ' ') {
       result.textContent += '0.';
@@ -195,10 +220,15 @@ numpad.addEventListener('click', (event) => {
     setFittedFontSize(result, resultFontSize);
   }
   
+  // operators
   if (event.target.closest('.button-operator')) {
     let operator = '';
     let symbol = event.target.textContent;
-    expressionToCalc += currentResultText;
+    const lastOperator = currentExpressionText.charAt(currentExpressionText.length - 2);
+    
+    if (lastOperator !== ')') {
+      expressionToCalc += currentResultText;
+    }
 
     isLastOperationWasPercentage = false;
 
@@ -213,13 +243,39 @@ numpad.addEventListener('click', (event) => {
 
       case '%':
         isLastOperationWasPercentage = true;
-        console.log(isLastOperationWasPercentage);
         operator = '';
-        const line = expressionToCalc;
-        const numArray = line.split(/[\s+\-*/]+/);
 
+        const closeIndex = expressionToCalc.lastIndexOf(')');
+        let openIndex = -1;
+        if (closeIndex !== -1) {
+          let depth = 0;
+          for (let i = closeIndex - 1; i >= 0; i--) {
+            if (expressionToCalc[i] === ')') {
+              depth++;
+            } else if (expressionToCalc[i] === '(') {
+              if (depth === 0) {
+          openIndex = i;
+          break;
+              } else {
+          depth--;
+              }
+            }
+          }
+        }
+
+        const line = expressionToCalc;
+        const numArray = line.split(/[\s+\-*/()]+/);
         const arrayLength = numArray.length;
-        operator = eval(numArray[arrayLength-2] * numArray[arrayLength-1] / 100);
+        console.log(numArray);
+        console.log(expressionToCalc);
+        
+        if (openIndex !== -1 && closeIndex !== -1) {
+          const insideBrackets = expressionToCalc.slice(openIndex + 1, closeIndex).trim();
+          operator = eval(eval(insideBrackets) * numArray[arrayLength-1] / 100);
+          console.log(insideBrackets, operator);
+        } else {
+          operator = eval(numArray[arrayLength-2] * numArray[arrayLength-1] / 100);
+        }
         
         symbol = String(operator);
         expressionToCalc = expressionToCalc.replace(numArray[arrayLength-1], operator);
@@ -230,9 +286,10 @@ numpad.addEventListener('click', (event) => {
         break;
     }
 
-    console.log(operator, symbol);
-
-    if (currentExpressionText.charAt(currentExpressionText.length - 2) === '=') {
+    if (lastOperator === ')') {
+      expressionToCalc += ' ' + operator + ' ';
+      expression.textContent += ' ' + symbol + ' ';
+    } else if (lastOperator === '=') {
       expressionToCalc = currentResultText + ' ' + operator + ' ';
       expression.textContent = currentResultText + ' ' + symbol + ' ';
     } else if (parseFloat(symbol) || symbol === '0') {
@@ -248,14 +305,26 @@ numpad.addEventListener('click', (event) => {
   
   // calculate
   if (event.target.closest('.button-equals')) {
-    if (currentExpressionText.charAt(currentExpressionText.length - 2) !== '=') {
-      if (!isLastOperationWasPercentage) {
+    const lastOperator = currentExpressionText.charAt(currentExpressionText.length - 2);
+    if (lastOperator !== '=') {
+      
+      if (!isLastOperationWasPercentage && lastOperator !== ')') {
         expressionToCalc += currentResultText;
-        expression.textContent += currentResultText + ' = ';
-      } else {
-        expression.textContent += ' = ';
+        expression.textContent += currentResultText;
       }
-    
+
+      while (leftBracketsNum > rightBracketsNum) {
+        expressionToCalc += ')';
+        if (leftBracketsNum === rightBracketsNum + 1) {
+          expression.textContent += ')';
+        } else {
+          expression.textContent += ') ';
+        }
+        rightBracketsNum++;
+      }
+      
+      expression.textContent += ' = ';
+
       setFittedFontSize(expression, expressionFontSize);
 
       try {
@@ -270,6 +339,9 @@ numpad.addEventListener('click', (event) => {
       }
 
       setFittedFontSize(result, resultFontSize);
+
+      leftBracketsNum = 0;
+      rightBracketsNum = 0;
 
       console.log(currentExpressionText);
       console.log(expressionToCalc);
