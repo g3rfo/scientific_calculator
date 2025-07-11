@@ -226,6 +226,7 @@ numpad.addEventListener('click', (event) => {
     if (isLastOperationWasPercentage) return;
 
     const mathExpression = event.target.textContent;
+    let mathExpressionToCalc;
     const insideBracketsExpToShow = getExpressionInBrackets(currentExpressionText);
     const insideBracketsExpToCalc = getExpressionInBrackets(expressionToCalc);
     const openIndexToCalc = insideBracketsExpToCalc.openIndex;
@@ -235,33 +236,44 @@ numpad.addEventListener('click', (event) => {
     
 
     switch (mathExpression) {
-      case 'sin':
-        if (openIndexToShow !== -1 && closeIndexToShow !== -1) {
-          if (isLastOperationWasMathExpression) {
-            expressionToCalc = expressionToCalc.slice(0, openIndexToCalc - (mathExpression.length + 5)) + 'Math.sin(' + expressionToCalc.slice(openIndexToCalc - (mathExpression.length + 5)) + ')';
-            expression.textContent = currentExpressionText.slice(0, openIndexToShow - mathExpression.length) + 'sin(' + currentExpressionText.slice(openIndexToShow - mathExpression.length) + ') ';
-            
-          } else {
-            if (isLastOperationWasOperator) {
-              expressionToCalc += `Math.sin(${currentResultText})`;
-              expression.textContent += `sin(${currentResultText}) `;
-            } else {
-              expressionToCalc = expressionToCalc.slice(0, openIndexToCalc) + 'Math.sin' + expressionToCalc.slice(openIndexToCalc);
-              expression.textContent = currentExpressionText.slice(0, openIndexToShow) + 'sin' + currentExpressionText.slice(openIndexToShow);
-            }
-          }
-        } else {
-          expressionToCalc += `Math.sin(${currentResultText})`;
-          expression.textContent += `sin(${currentResultText}) `;
-        }
-        isLastOperationWasMathExpression = true;
-        isLastOperationWasOperator = false;
-        isLastOperationWasPercentage = false;
-        result.textContent = '0';
+      case 'log':
+        mathExpressionToCalc = mathExpression + '10';
         break;
+
+      case 'ln':
+        mathExpressionToCalc = 'log';
+        break;
+
       default:
+        mathExpressionToCalc = mathExpression;
         break;
     }
+
+    if (openIndexToShow !== -1 && closeIndexToShow !== -1) {
+      if (isLastOperationWasMathExpression) {
+        expressionToCalc = expressionToCalc.slice(0, openIndexToCalc - (mathExpressionToCalc.length + 5)) + `Math.${mathExpressionToCalc}(` + expressionToCalc.slice(openIndexToCalc - (mathExpressionToCalc.length + 5)) + ')';
+        expression.textContent = currentExpressionText.slice(0, openIndexToShow - mathExpression.length) + `${mathExpression}(` + currentExpressionText.slice(openIndexToShow - mathExpression.length) + ') ';
+        
+      } else {
+        if (isLastOperationWasOperator) {
+          expressionToCalc += `Math.${mathExpressionToCalc}(${currentResultText})`;
+          expression.textContent += `${mathExpression}(${currentResultText}) `;
+        } else {
+          expressionToCalc = expressionToCalc.slice(0, openIndexToCalc) + `Math.${mathExpressionToCalc}` + expressionToCalc.slice(openIndexToCalc);
+          expression.textContent = currentExpressionText.slice(0, openIndexToShow) + `${mathExpression}` + currentExpressionText.slice(openIndexToShow);
+        }
+      }
+    } else {
+      expressionToCalc += `Math.${mathExpressionToCalc}(${currentResultText})`;
+      expression.textContent += `${mathExpression}(${currentResultText}) `;
+    }
+
+    isLastOperationWasMathExpression = true;
+    isLastOperationWasOperator = false;
+    isLastOperationWasPercentage = false;
+    result.textContent = '0';
+    console.log(mathExpression);
+
     console.log(expression.textContent, expressionToCalc, openIndexToShow, closeIndexToShow, openIndexToCalc, closeIndexToCalc);
     leftBracketsNum ++;
     rightBracketsNum ++;
