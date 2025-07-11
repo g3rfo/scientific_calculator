@@ -210,6 +210,18 @@ numpad.addEventListener('click', (event) => {
     setFittedFontSize(result, resultFontSize);
   }
 
+  // switch value to negative
+  if (event.target.closest('.button-switchToNegative')) {
+
+    if (currentResultText.startsWith('-')) {
+      result.textContent = currentResultText.slice(1);
+    } else {
+      result.textContent = '-' + currentResultText;
+    }
+
+    setFittedFontSize(result, resultFontSize);
+  }
+
   // math constants
   if (event.target.closest('.button-const')) {
     if (event.target.textContent === 'e') {
@@ -220,7 +232,7 @@ numpad.addEventListener('click', (event) => {
     
     setFittedFontSize(result, resultFontSize);
   }
-
+  
   // math expressions
   if (event.target.closest('.button-math-expression')) {
     if (isLastOperationWasPercentage) return;
