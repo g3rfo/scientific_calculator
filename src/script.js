@@ -162,6 +162,8 @@ let isLastOperationWasOperator = false;
 let isLastOperationWasPercentage = false;
 let isLastOperationWasMathExpression = false;
 let isLastOperationWasEqual = false;
+let lastMathExpressionLength = 0;
+let lastMathExpressionToCalcLength = 0;
 let leftBracketsNum = 0;
 let rightBracketsNum = 0;
 
@@ -180,6 +182,10 @@ numpad.addEventListener('click', (event) => {
     expression.textContent = '';
     result.textContent = '0';
     expressionToCalc = '';
+    lastMathExpressionLength = 0;
+    lastMathExpressionToCalcLength = 0;
+    leftBracketsNum = 0;
+    rightBracketsNum = 0;
     setFittedFontSize(result, resultFontSize);
   }
   
@@ -245,7 +251,6 @@ numpad.addEventListener('click', (event) => {
     const closeIndexToCalc = insideBracketsExpToCalc.closeIndex;
     const openIndexToShow = insideBracketsExpToShow.openIndex;
     const closeIndexToShow = insideBracketsExpToShow.closeIndex;
-    
 
     switch (mathExpression) {
       case 'log':
@@ -263,9 +268,9 @@ numpad.addEventListener('click', (event) => {
 
     if (openIndexToShow !== -1 && closeIndexToShow !== -1) {
       if (isLastOperationWasMathExpression) {
-        expressionToCalc = expressionToCalc.slice(0, openIndexToCalc - (mathExpressionToCalc.length + 5)) + `Math.${mathExpressionToCalc}(` + expressionToCalc.slice(openIndexToCalc - (mathExpressionToCalc.length + 5)) + ')';
-        expression.textContent = currentExpressionText.slice(0, openIndexToShow - mathExpression.length) + `${mathExpression}(` + currentExpressionText.slice(openIndexToShow - mathExpression.length) + ') ';
-        
+        console.log('isLastOperationWasMathExpression');
+        expressionToCalc = expressionToCalc.slice(0, openIndexToCalc - (lastMathExpressionToCalcLength.length + 5)) + `Math.${mathExpressionToCalc}(` + expressionToCalc.slice(openIndexToCalc - (lastMathExpressionToCalcLength.length + 5)) + ')';
+        expression.textContent = currentExpressionText.slice(0, openIndexToShow - lastMathExpressionLength.length) + `${mathExpression}(` + currentExpressionText.slice(openIndexToShow - lastMathExpressionLength.length) + ') ';
       } else {
         if (isLastOperationWasOperator) {
           expressionToCalc += `Math.${mathExpressionToCalc}(${currentResultText})`;
@@ -279,6 +284,11 @@ numpad.addEventListener('click', (event) => {
       expressionToCalc += `Math.${mathExpressionToCalc}(${currentResultText})`;
       expression.textContent += `${mathExpression}(${currentResultText}) `;
     }
+
+    lastMathExpressionLength = mathExpression.length;
+    lastMathExpressionToCalcLength = mathExpressionToCalc.length;
+
+    console.log('Calc = ' + lastMathExpressionToCalcLength + ' show = ' + lastMathExpressionLength);
 
     isLastOperationWasMathExpression = true;
     isLastOperationWasOperator = false;
