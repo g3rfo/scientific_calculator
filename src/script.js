@@ -105,7 +105,6 @@ function setFittedFontSize(element, elementBasicFontSize) {
 
 function getExpressionInBrackets(line) {
   const closeIndex = line.lastIndexOf(')');
-
   let openIndex = -1;
   if (closeIndex !== -1) {
     let depth = 0;
@@ -124,8 +123,10 @@ function getExpressionInBrackets(line) {
   }
 
   const numArray = line.split(/[\s+\-*/()]+/);
-  const insideBrackets = line.slice(openIndex + 1, closeIndex).trim();
-  return {openIndex, closeIndex, insideBrackets, numArray};
+  const insideBrackets = (openIndex !== -1 && closeIndex !== -1)
+    ? line.slice(openIndex + 1, closeIndex).trim()
+    : '';
+  return { openIndex, closeIndex, insideBrackets, numArray };
 }
 
 // change-mode handling
@@ -166,6 +167,8 @@ let lastMathExpressionLength = 0;
 let lastMathExpressionToCalcLength = 0;
 let leftBracketsNum = 0;
 let rightBracketsNum = 0;
+let searchBracketsFrom = 0;
+let searchBracketsToCalcFrom = 0;
 
 numpad.addEventListener('click', (event) => {
   if (isLastOperationWasEqual) {
@@ -186,6 +189,8 @@ numpad.addEventListener('click', (event) => {
     lastMathExpressionToCalcLength = 0;
     leftBracketsNum = 0;
     rightBracketsNum = 0;
+    searchBracketsFrom = 0;
+    searchBracketsToCalcFrom = 0;
     setFittedFontSize(result, resultFontSize);
   }
   
@@ -252,6 +257,7 @@ numpad.addEventListener('click', (event) => {
     const openIndexToShow = insideBracketsExpToShow.openIndex;
     const closeIndexToShow = insideBracketsExpToShow.closeIndex;
 
+    console.log('Operator: curExpToShow = ' + currentExpressionText + ' curExpToCalc = ' + expressionToCalc);
     switch (mathExpression) {
       case 'log':
         mathExpressionToCalc = mathExpression + '10';
@@ -267,10 +273,12 @@ numpad.addEventListener('click', (event) => {
     }
 
     if (openIndexToShow !== -1 && closeIndexToShow !== -1) {
+      console.log(lastMathExpressionLength.length, 111 - undefined);
+
       if (isLastOperationWasMathExpression) {
-        console.log('isLastOperationWasMathExpression');
-        expressionToCalc = expressionToCalc.slice(0, openIndexToCalc - (lastMathExpressionToCalcLength.length + 5)) + `Math.${mathExpressionToCalc}(` + expressionToCalc.slice(openIndexToCalc - (lastMathExpressionToCalcLength.length + 5)) + ')';
-        expression.textContent = currentExpressionText.slice(0, openIndexToShow - lastMathExpressionLength.length) + `${mathExpression}(` + currentExpressionText.slice(openIndexToShow - lastMathExpressionLength.length) + ') ';
+        console.log('Prev operation was math operation');
+        expressionToCalc = expressionToCalc.slice(0, openIndexToCalc - (lastMathExpressionToCalcLength + 5)) + `Math.${mathExpressionToCalc}(` + expressionToCalc.slice(openIndexToCalc - (lastMathExpressionToCalcLength + 5)) + ')';
+        expression.textContent = currentExpressionText.slice(0, openIndexToShow - lastMathExpressionLength) + `${mathExpression}(` + currentExpressionText.slice(openIndexToShow - lastMathExpressionLength) + ') ';
       } else {
         if (isLastOperationWasOperator) {
           expressionToCalc += `Math.${mathExpressionToCalc}(${currentResultText})`;
@@ -288,13 +296,10 @@ numpad.addEventListener('click', (event) => {
     lastMathExpressionLength = mathExpression.length;
     lastMathExpressionToCalcLength = mathExpressionToCalc.length;
 
-    console.log('Calc = ' + lastMathExpressionToCalcLength + ' show = ' + lastMathExpressionLength);
-
     isLastOperationWasMathExpression = true;
     isLastOperationWasOperator = false;
     isLastOperationWasPercentage = false;
     result.textContent = '0';
-    console.log(mathExpression);
 
     console.log(expression.textContent, expressionToCalc, openIndexToShow, closeIndexToShow, openIndexToCalc, closeIndexToCalc);
     leftBracketsNum ++;
@@ -471,8 +476,12 @@ numpad.addEventListener('click', (event) => {
       expressionToCalc = '';
       isLastOperationWasEqual = true;
       console.log(expressionToCalc);
+      lastMathExpressionLength = 0;
+      lastMathExpressionToCalcLength = 0;
       leftBracketsNum = 0;
       rightBracketsNum = 0;
+      searchBracketsFrom = 0;
+      searchBracketsToCalcFrom = 0;
       isLastOperationWasMathExpression = false;
       isLastOperationWasOperator = false;
       isLastOperationWasPercentage = false;
