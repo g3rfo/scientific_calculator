@@ -1,10 +1,20 @@
 // top-bar
 const openModeSelection = document.querySelector('.change-mode-button');
 const topBarTitle = document.querySelector('.title');
+const openHistory = document.querySelector('.history-button');
 // mode-selection-aside
 const modeSelectionAside = document.querySelector('.mode-selection');
 const selectStandartMode = document.querySelector('.mode-1');
 const selectScientificMode = document.querySelector('.mode-2');
+const selectDataCalculationMode = document.querySelector('.mode-3');
+const selectCurrencyMode = document.querySelector('.mode-4');
+const selectWeightAndMassMode = document.querySelector('.mode-5');
+const selectTemperatureMode = document.querySelector('.mode-6');
+const selectAreaMode = document.querySelector('.mode-7');
+const selectTimeMode = document.querySelector('.mode-8');
+const selectPowerMode = document.querySelector('.mode-9');
+const selectDataMode = document.querySelector('.mode-10');
+
 // display
 const display = document.querySelector('.display');
 const expression = document.querySelector('.expression');
@@ -154,6 +164,58 @@ selectScientificMode.addEventListener('click', () => {
   showElement(numpad);
   displayModeScientific();
   hideModeSelection();
+})
+
+openHistory.addEventListener('click', () => {
+  alert('То на новий рік');
+})
+
+selectDataCalculationMode.addEventListener('click', () => {
+  alert('То на новий рік');
+  // topBarTitle.innerText = 'Data Calculation';
+  // hideModeSelection();
+})
+
+selectCurrencyMode.addEventListener('click', () => {
+  alert('То на новий рік');
+  // topBarTitle.innerText = 'Currency';
+  // hideModeSelection();
+})
+
+selectWeightAndMassMode.addEventListener('click', () => {
+  alert('То на новий рік');
+  // topBarTitle.innerText = 'Weight & Mass';
+  // hideModeSelection();
+})
+
+selectTemperatureMode.addEventListener('click', () => {
+  alert('То на новий рік');
+  // topBarTitle.innerText = 'Temperature';
+  // hideModeSelection();
+})
+
+selectAreaMode.addEventListener('click', () => {
+  alert('То на новий рік');
+  // topBarTitle.innerText = 'Area';
+  // hideModeSelection();
+})
+
+selectTimeMode.addEventListener('click', () => {
+  alert('То на новий рік');
+  // topBarTitle.innerText = 'Time';
+  // hideModeSelection();
+})
+
+selectPowerMode.addEventListener('click', () => {
+  alert('То на новий рік');
+  // topBarTitle.innerText = 'Power';
+  // hideModeSelection();
+})
+
+selectDataMode.addEventListener('click', () => {
+  alert('То на новий рік');
+  // topBarTitle.innerText = 'Data';
+  // hideModeSelection();
 })
 
 // standart and sciensific calculator
