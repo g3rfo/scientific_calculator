@@ -161,6 +161,7 @@ selectScientificMode.addEventListener('click', () => {
 let expressionToCalc = '';
 let isLastOperationWasOperator = false;
 let isLastOperationWasPercentage = false;
+let isLastOperationWasPower = false;
 let isLastOperationWasMathExpression = false;
 let isLastOperationWasEqual = false;
 let lastMathExpressionLength = 0;
@@ -318,6 +319,7 @@ numpad.addEventListener('click', (event) => {
     isLastOperationWasMathExpression = true;
     isLastOperationWasOperator = false;
     isLastOperationWasPercentage = false;
+    isLastOperationWasPower = false;
     result.textContent = '0';
 
     console.log(expression.textContent, expressionToCalc, openIndexToShow, closeIndexToShow, openIndexToCalc, closeIndexToCalc);
@@ -376,6 +378,7 @@ numpad.addEventListener('click', (event) => {
     }
     
     let isCurrentOperationIsPercentage = false;
+    isLastOperationWasPower = false;
 
     switch(symbol) {
       case '÷':
@@ -421,9 +424,19 @@ numpad.addEventListener('click', (event) => {
           operator = eval(numArray[arrayLength-2] * numArray[arrayLength-1] / 100);
         }
 
-        symbol = String(operator);
+        symbol = operator;
         expressionToCalc = expressionToCalc.replace(numArray[arrayLength-1], operator);
+        break;
 
+      case 'x²':
+        operator = '** 2';
+        symbol = '^ 2';
+        isLastOperationWasPower = true;
+        break;
+
+      case 'xʸ':
+        operator = '**';
+        symbol = '^';
         break;
 
       default:
@@ -461,7 +474,7 @@ numpad.addEventListener('click', (event) => {
     const lastOperator = currentExpressionText.charAt(currentExpressionText.length - 2);
     if (lastOperator !== '=') {
       
-      if (!isLastOperationWasPercentage && lastOperator !== ')') {
+      if (!isLastOperationWasPercentage && lastOperator !== ')' && !isLastOperationWasPower) {
         expressionToCalc += currentResultText;
         expression.textContent += currentResultText;
       }
@@ -503,6 +516,7 @@ numpad.addEventListener('click', (event) => {
       searchBracketsToCalcFrom = 0;
       isLastOperationWasMathExpression = false;
       isLastOperationWasOperator = false;
+      isLastOperationWasPower = false;
       isLastOperationWasPercentage = false;
       console.log(currentExpressionText);
       console.log(expressionToCalc);
