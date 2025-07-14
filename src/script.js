@@ -248,8 +248,10 @@ numpad.addEventListener('click', (event) => {
   if (event.target.closest('.button-math-expression')) {
     if (isLastOperationWasPercentage) return;
 
-    const mathExpression = event.target.textContent;
+    let mathExpression = event.target.textContent;
     let mathExpressionToCalc;
+    let mathEndPoint = 'Math.';
+
     const insideBracketsExpToShow = getExpressionInBrackets(currentExpressionText);
     const insideBracketsExpToCalc = getExpressionInBrackets(expressionToCalc);
     const openIndexToCalc = insideBracketsExpToCalc.openIndex;
@@ -257,7 +259,8 @@ numpad.addEventListener('click', (event) => {
     const openIndexToShow = insideBracketsExpToShow.openIndex;
     const closeIndexToShow = insideBracketsExpToShow.closeIndex;
 
-    console.log('Operator: curExpToShow = ' + currentExpressionText + ' curExpToCalc = ' + expressionToCalc);
+    
+
     switch (mathExpression) {
       case 'log':
         mathExpressionToCalc = mathExpression + '10';
@@ -267,29 +270,31 @@ numpad.addEventListener('click', (event) => {
         mathExpressionToCalc = 'log';
         break;
 
+      case 'x⁻¹': 
+        mathExpression = mathExpressionToCalc = '1 / ';
+        mathEndPoint = '';
+        break;
+
       default:
         mathExpressionToCalc = mathExpression;
         break;
     }
 
     if (openIndexToShow !== -1 && closeIndexToShow !== -1) {
-      console.log(lastMathExpressionLength.length, 111 - undefined);
-
       if (isLastOperationWasMathExpression) {
-        console.log('Prev operation was math operation');
-        expressionToCalc = expressionToCalc.slice(0, openIndexToCalc - (lastMathExpressionToCalcLength + 5)) + `Math.${mathExpressionToCalc}(` + expressionToCalc.slice(openIndexToCalc - (lastMathExpressionToCalcLength + 5)) + ')';
+        expressionToCalc = expressionToCalc.slice(0, openIndexToCalc - (lastMathExpressionToCalcLength + 5)) + `${mathEndPoint}${mathExpressionToCalc}(` + expressionToCalc.slice(openIndexToCalc - (lastMathExpressionToCalcLength + 5)) + ')';
         expression.textContent = currentExpressionText.slice(0, openIndexToShow - lastMathExpressionLength) + `${mathExpression}(` + currentExpressionText.slice(openIndexToShow - lastMathExpressionLength) + ') ';
       } else {
         if (isLastOperationWasOperator) {
-          expressionToCalc += `Math.${mathExpressionToCalc}(${currentResultText})`;
+          expressionToCalc += `${mathEndPoint}${mathExpressionToCalc}(${currentResultText})`;
           expression.textContent += `${mathExpression}(${currentResultText}) `;
         } else {
-          expressionToCalc = expressionToCalc.slice(0, openIndexToCalc) + `Math.${mathExpressionToCalc}` + expressionToCalc.slice(openIndexToCalc);
+          expressionToCalc = expressionToCalc.slice(0, openIndexToCalc) + `${mathEndPoint}${mathExpressionToCalc}` + expressionToCalc.slice(openIndexToCalc);
           expression.textContent = currentExpressionText.slice(0, openIndexToShow) + `${mathExpression}` + currentExpressionText.slice(openIndexToShow);
         }
       }
     } else {
-      expressionToCalc += `Math.${mathExpressionToCalc}(${currentResultText})`;
+      expressionToCalc += `${mathEndPoint}${mathExpressionToCalc}(${currentResultText})`;
       expression.textContent += `${mathExpression}(${currentResultText}) `;
     }
 
