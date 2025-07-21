@@ -21,11 +21,20 @@ const expression = document.querySelector('.expression');
 const result = document.querySelector('.result');
 const expressionFontSize = getPxToNumberValue(getComputedStyle(expression).fontSize);
 const resultFontSize = getPxToNumberValue(getComputedStyle(result).fontSize);
+
+// display from to mode
+
+const displayFromToMode = document.querySelector('.display-from-to-mode');
+
 // numpad
 const numpad = document.querySelector('.numpad');
 const numpadButtons = document.querySelectorAll('.numpad-button');
-const extendedButton = document.querySelector('.extended-button');
+const buttonEquals = document.querySelector('.button-equals');
+const extendedButtonZero = document.querySelector('.extended-button-zero');
+const extendedButtonClear = document.querySelector('.extended-button-clear');
+const extendedButtonDelete = document.querySelector('.extended-button-delete');
 const scientificModeButtons = document.querySelectorAll('.scientific-mode');
+const operatorButtons = document.querySelectorAll('.button-operator');
 
 // math
 const PI = Math.PI;
@@ -34,21 +43,26 @@ const E = Math.E;
 // common functions
 
 function isVisible(element) {
-  return getComputedStyle(element).opacity !== '0';
+  // return getComputedStyle(element).opacity !== '0';
+  const displayValue = getComputedStyle(element).display;
+  console.log(element.className + displayValue);
+  return displayValue !== 'none' && displayValue !== '';
 }
 
 function hideElement(element) {
   if (isVisible(element)) {
-    element.style.opacity = '0';
-    element.style.pointerEvents = 'none';
+    element.style.display = 'none';
+    // element.style.opacity = '0';
+    // element.style.pointerEvents = 'none';
     console.log(element.className + ' was hidden');
   }
 }
 
-function showElement(element) {
+function showElement(element, displayStyle) {
   if (!isVisible(element)) {
-    element.style.opacity = '1';
-    element.style.pointerEvents = 'auto';
+    element.style.display = displayStyle;
+    // element.style.opacity = '1';
+    // element.style.pointerEvents = 'auto';
     console.log(element.className + ' was showed');
   }
 }
@@ -62,20 +76,56 @@ function hideModeSelection() {
   setTimeout(() => hideElement(modeSelectionAside), 300);
 }
 
-function displayModeStandart() {
-  numpad.style.gridTemplateRows = 'repeat(5, 80px)';
+function displayModeSmallest() {
+  numpad.style.gridTemplateRows = 'repeat(4, 80px)';
   numpad.style.gridTemplateColumns = 'repeat(4, 80px)';
   numpad.style.gap = '21px 15px';
 
-  extendedButton.style.gridColumn = '1 / 3';
+  extendedButtonZero.style.gridColumn = '1 / 3';
+  extendedButtonClear.style.gridColumn = '4 / 5';
+  extendedButtonClear.style.gridRow = '1 / 3';
+  extendedButtonDelete.style.gridColumn = '4 / 5';
+  extendedButtonDelete.style.gridRow = '3 / 5';
 
   numpadButtons.forEach(button => {
     button.style.fontSize = '3rem';
   });
   
+  operatorButtons.forEach(button => {
+    button.style.display = 'none';
+  });
+
   scientificModeButtons.forEach(button => {
     button.style.display = 'none';
   });
+
+  buttonEquals.style.display = 'none';
+}
+
+function displayModeStandart() {
+  numpad.style.gridTemplateRows = 'repeat(5, 80px)';
+  numpad.style.gridTemplateColumns = 'repeat(4, 80px)';
+  numpad.style.gap = '21px 15px';
+
+  extendedButtonZero.style.gridColumn = '1 / 3';
+  extendedButtonClear.style.gridColumn = '1 / 2';
+  extendedButtonClear.style.gridRow = '1 / 2';
+  extendedButtonDelete.style.gridColumn = '4 / 5';
+  extendedButtonDelete.style.gridRow = '1 / 2';
+
+  numpadButtons.forEach(button => {
+    button.style.fontSize = '3rem';
+  });
+  
+  operatorButtons.forEach(button => {
+    button.style.display = 'block';
+  });
+
+  scientificModeButtons.forEach(button => {
+    button.style.display = 'none';
+  });
+
+  buttonEquals.style.display = 'block';
 
   resetDisplayValue(expression, '');
   resetDisplayValue(result, '0');
@@ -86,7 +136,11 @@ function displayModeScientific() {
   numpad.style.gridTemplateColumns = 'repeat(5, 60px)';
   numpad.style.gap = '10px 15px';
 
-  extendedButton.style.gridColumn = '2 / 4';
+  extendedButtonZero.style.gridColumn = '2 / 4';
+  extendedButtonClear.style.gridColumn = '1 / 2';
+  extendedButtonClear.style.gridRow = '1 / 2';
+  extendedButtonDelete.style.gridColumn = '5 / 6';
+  extendedButtonDelete.style.gridRow = '1 / 2';
 
   numpadButtons.forEach(button => {
     button.style.fontSize = '2rem';
@@ -95,6 +149,12 @@ function displayModeScientific() {
   scientificModeButtons.forEach(button => {
     button.style.display = 'block';
   });
+
+  operatorButtons.forEach(button => {
+    button.style.display = 'block';
+  });
+
+  buttonEquals.style.display = 'block';
 
   resetDisplayValue(expression, '');
   resetDisplayValue(result, '0');
@@ -142,26 +202,29 @@ function getExpressionInBrackets(line) {
 // change-mode handling
 
 openModeSelection.addEventListener('click', () => {
-  showElement(modeSelectionAside);
-  modeSelectionAside.style.transform = 'translateX(0)';
+  showElement(modeSelectionAside, 'flex');
+  requestAnimationFrame(() => {
+    modeSelectionAside.style.transform = 'translateX(0)';
+  });
   setTimeout(() => {
     hideElement(display);
+    hideElement(displayFromToMode);
     hideElement(numpad);
   }, 300);
 })
 
 selectStandartMode.addEventListener('click', () => {
   topBarTitle.innerText = 'Standart';
-  showElement(display);
-  showElement(numpad);
+  showElement(display, 'flex');
+  showElement(numpad, 'grid');
   displayModeStandart();
   hideModeSelection();
 })
 
 selectScientificMode.addEventListener('click', () => {
   topBarTitle.innerText = 'Scientific';
-  showElement(display);
-  showElement(numpad);
+  showElement(display, 'flex');
+  showElement(numpad, 'grid');
   displayModeScientific();
   hideModeSelection();
 })
@@ -189,9 +252,11 @@ selectWeightAndMassMode.addEventListener('click', () => {
 })
 
 selectTemperatureMode.addEventListener('click', () => {
-  alert('То на новий рік');
-  // topBarTitle.innerText = 'Temperature';
-  // hideModeSelection();
+  topBarTitle.innerText = 'Temperature';
+  showElement(displayFromToMode, 'block');
+  showElement(numpad, 'grid');
+  displayModeSmallest();
+  hideModeSelection();
 })
 
 selectAreaMode.addEventListener('click', () => {
