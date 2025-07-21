@@ -2,6 +2,7 @@
 const openModeSelection = document.querySelector('.change-mode-button');
 const topBarTitle = document.querySelector('.title');
 const openHistory = document.querySelector('.history-button');
+
 // mode-selection-aside
 const modeSelectionAside = document.querySelector('.mode-selection');
 const selectStandartMode = document.querySelector('.mode-1');
@@ -23,8 +24,17 @@ const expressionFontSize = getPxToNumberValue(getComputedStyle(expression).fontS
 const resultFontSize = getPxToNumberValue(getComputedStyle(result).fontSize);
 
 // display from to mode
+let isCurrentFromToMode = false;
 
 const displayFromToMode = document.querySelector('.display-from-to-mode');
+const firstSelectionList = document.getElementById('first-select');
+const secondSelectionList = document.getElementById('second-select');
+const firstUnit = document.querySelector('.first-unit');
+const secondUnit = document.querySelector('.second-unit');
+const firstUnitText = document.querySelector('.first-unit-result');
+const secondUnitText = document.querySelector('.second-unit-result');
+
+const temperature = ['Celsius', 'Fahrenheit', 'Kelvin'];
 
 // numpad
 const numpad = document.querySelector('.numpad');
@@ -43,27 +53,19 @@ const E = Math.E;
 // common functions
 
 function isVisible(element) {
-  // return getComputedStyle(element).opacity !== '0';
   const displayValue = getComputedStyle(element).display;
-  console.log(element.className + displayValue);
   return displayValue !== 'none' && displayValue !== '';
 }
 
 function hideElement(element) {
   if (isVisible(element)) {
     element.style.display = 'none';
-    // element.style.opacity = '0';
-    // element.style.pointerEvents = 'none';
-    console.log(element.className + ' was hidden');
   }
 }
 
 function showElement(element, displayStyle) {
   if (!isVisible(element)) {
     element.style.display = displayStyle;
-    // element.style.opacity = '1';
-    // element.style.pointerEvents = 'auto';
-    console.log(element.className + ' was showed');
   }
 }
 
@@ -81,7 +83,7 @@ function displayModeSmallest() {
   numpad.style.gridTemplateColumns = 'repeat(4, 80px)';
   numpad.style.gap = '21px 15px';
 
-  extendedButtonZero.style.gridColumn = '1 / 3';
+  extendedButtonZero.style.gridColumn = '2 / 3';
   extendedButtonClear.style.gridColumn = '4 / 5';
   extendedButtonClear.style.gridRow = '1 / 3';
   extendedButtonDelete.style.gridColumn = '4 / 5';
@@ -98,6 +100,8 @@ function displayModeSmallest() {
   scientificModeButtons.forEach(button => {
     button.style.display = 'none';
   });
+
+  document.querySelector('.button-switchToNegative').style.display = 'block';
 
   buttonEquals.style.display = 'none';
 }
@@ -214,6 +218,7 @@ openModeSelection.addEventListener('click', () => {
 })
 
 selectStandartMode.addEventListener('click', () => {
+  isCurrentFromToMode = false;
   topBarTitle.innerText = 'Standart';
   showElement(display, 'flex');
   showElement(numpad, 'grid');
@@ -222,6 +227,7 @@ selectStandartMode.addEventListener('click', () => {
 })
 
 selectScientificMode.addEventListener('click', () => {
+  isCurrentFromToMode = false;
   topBarTitle.innerText = 'Scientific';
   showElement(display, 'flex');
   showElement(numpad, 'grid');
@@ -252,10 +258,18 @@ selectWeightAndMassMode.addEventListener('click', () => {
 })
 
 selectTemperatureMode.addEventListener('click', () => {
+  isCurrentFromToMode = true;
   topBarTitle.innerText = 'Temperature';
+
   showElement(displayFromToMode, 'block');
+  changeListValues(temperature);
+  firstUnitText.textContent = '0';
+  secondUnitText.textContent = '0';
+  secondUnitText.style.fontWeight = '400';
+
   showElement(numpad, 'grid');
   displayModeSmallest();
+
   hideModeSelection();
 })
 
@@ -311,30 +325,52 @@ numpad.addEventListener('click', (event) => {
   
   // clear
   if (event.target.closest('.button-clear')) {
-    expression.textContent = '';
-    result.textContent = '0';
-    expressionToCalc = '';
-    lastMathExpressionLength = 0;
-    lastMathExpressionToCalcLength = 0;
-    lastMathEndPointLength = 0;
-    leftBracketsNum = 0;
-    rightBracketsNum = 0;
-    searchBracketsFrom = 0;
-    searchBracketsToCalcFrom = 0;
-    setFittedFontSize(result, resultFontSize);
+    if (isCurrentFromToMode) {
+      lastUnit.textContent = '0';
+
+      convertTemperature(lastUnit);
+      setFittedFontSize(firstUnitText, resultFontSize);
+      setFittedFontSize(secondUnitText, resultFontSize);
+    } else {
+      expression.textContent = '';
+      result.textContent = '0';
+      expressionToCalc = '';
+      lastMathExpressionLength = 0;
+      lastMathExpressionToCalcLength = 0;
+      lastMathEndPointLength = 0;
+      leftBracketsNum = 0;
+      rightBracketsNum = 0;
+      searchBracketsFrom = 0;
+      searchBracketsToCalcFrom = 0;
+      setFittedFontSize(result, resultFontSize);
+    }
   }
   
   // delete
   if (event.target.closest('.button-delete')) {
-    if(currentResultText) {
-      const textLength = currentResultText.length;
+    if (isCurrentFromToMode) {
+      const textLength = lastUnit.textContent.length;
 
       if (textLength === 1) {
-        result.textContent = '0';
+        lastUnit.textContent = '0';
       } else {
-        result.textContent = currentResultText.slice(0, textLength - 1);
+        lastUnit.textContent = lastUnit.textContent.slice(0, textLength - 1);
       }
-      setFittedFontSize(result, resultFontSize);
+
+      convertTemperature(lastUnit);
+      setFittedFontSize(firstUnitText, resultFontSize);
+      setFittedFontSize(secondUnitText, resultFontSize);
+    } else {
+      if (currentResultText) {
+        const textLength = currentResultText.length;
+
+        if (textLength === 1) {
+          result.textContent = '0';
+        } else {
+          result.textContent = currentResultText.slice(0, textLength - 1);
+        }
+        setFittedFontSize(result, resultFontSize);
+      }
     }
   } 
   
@@ -342,25 +378,49 @@ numpad.addEventListener('click', (event) => {
   if (event.target.closest('.button-number')) {
     const symbol = event.target.textContent;
 
-    if (currentResultText === '0' || currentResultText === ' ') {
-      result.textContent = symbol;
-    } else {
-      result.textContent += symbol;
-    }
+    if (isCurrentFromToMode) {
+      if (lastUnit.textContent === '0' || isNewUnit) {
+        isNewUnit = false;
+        lastUnit.textContent = symbol;
+      } else {
+        lastUnit.textContent += symbol;
+      }
 
-    setFittedFontSize(result, resultFontSize);
+      convertTemperature(lastUnit);
+      setFittedFontSize(firstUnitText, resultFontSize);
+      setFittedFontSize(secondUnitText, resultFontSize);
+    } else {
+      if (currentResultText === '0' || currentResultText === ' ') {
+        result.textContent = symbol;
+      } else {
+        result.textContent += symbol;
+      }
+
+      setFittedFontSize(result, resultFontSize);
+    }
   }
 
   // switch value to negative
   if (event.target.closest('.button-switchToNegative')) {
+    if (isCurrentFromToMode) {
+      if (lastUnit.textContent.startsWith('-')) {
+        lastUnit.textContent = lastUnit.textContent.slice(1);
+      } else {
+        lastUnit.textContent = '-' + lastUnit.textContent;
+      }
 
-    if (currentResultText.startsWith('-')) {
-      result.textContent = currentResultText.slice(1);
+      convertTemperature(lastUnit);
+      setFittedFontSize(firstUnitText, resultFontSize);
+      setFittedFontSize(secondUnitText, resultFontSize);
     } else {
-      result.textContent = '-' + currentResultText;
-    }
+      if (currentResultText.startsWith('-')) {
+        result.textContent = currentResultText.slice(1);
+      } else {
+        result.textContent = '-' + currentResultText;
+      }
 
-    setFittedFontSize(result, resultFontSize);
+      setFittedFontSize(result, resultFontSize);
+    }
   }
 
   // math constants
@@ -486,12 +546,20 @@ numpad.addEventListener('click', (event) => {
 
   // decimal dot
   if (event.target.closest('.button-decimal')) {
-    if (currentResultText.charAt(currentResultText.length - 1) === ' ') {
-      result.textContent += '0.';
+    if (isCurrentFromToMode) {
+      if (!lastUnit.textContent.includes('.')) {
+        lastUnit.textContent += '.';
+      }
     } else {
-      result.textContent += '.';
+      if (!result.textContent.includes('.')) {
+        if (currentResultText.charAt(currentResultText.length - 1) === ' ') {
+          result.textContent += '0.';
+        } else {
+          result.textContent += '.';
+        }
+        setFittedFontSize(result, resultFontSize);
+      }
     }
-    setFittedFontSize(result, resultFontSize);
   }
   
   // operators
@@ -651,3 +719,113 @@ numpad.addEventListener('click', (event) => {
   }
 });
 
+
+// from to calculator
+
+let lastUnit = firstUnitText;
+let isNewUnit = true;
+
+function changeListValues(listName) {
+  firstSelectionList.innerHTML = '';
+  secondSelectionList.innerHTML = '';
+
+  listName.forEach(element => {
+    let newElement1 = document.createElement('option');
+    newElement1.value = element;
+    newElement1.textContent = element;
+
+    let newElement2 = document.createElement('option');
+    newElement2.value = element;
+    newElement2.textContent = element;
+
+    firstSelectionList.appendChild(newElement1);
+    secondSelectionList.appendChild(newElement2);
+  });
+}
+
+firstUnitText.addEventListener('click', () => {
+  lastUnit = firstUnitText;
+  isNewUnit = true;
+  firstUnitText.style.fontWeight = '700';
+  secondUnitText.style.fontWeight = '400';
+})
+
+secondUnitText.addEventListener('click', () => {
+  lastUnit = secondUnitText;
+  isNewUnit = true;
+  secondUnitText.style.fontWeight = '700';
+  firstUnitText.style.fontWeight = '400';
+})
+
+// temperature
+// const temperature = ['Celsius', 'Fahrenheit', 'Kelvin'];
+
+firstSelectionList.addEventListener('change', () => {
+  convertTemperature(lastUnit);
+  setFittedFontSize(secondUnitText, resultFontSize);
+})
+
+secondSelectionList.addEventListener('change', () => {
+  convertTemperature(lastUnit);
+  setFittedFontSize(firstUnitText, resultFontSize);
+})
+
+function convertTemperature(unit) {
+  let from;
+  let to;
+
+  if (unit === firstUnitText) {
+    from = firstSelectionList;
+    to = secondSelectionList;
+  } else {
+    from = secondSelectionList;
+    to = firstSelectionList;
+  }
+
+  const fromOption = from.value;
+  const toOption = to.value;
+  const fromValue = parseFloat(lastUnit.textContent);
+  let result;
+
+  switch (fromOption) {
+    case 'Celsius':
+      if (toOption === 'Fahrenheit') {
+        result = fromValue * 9 / 5 + 32;
+      } else if (toOption === 'Kelvin') {
+        result = fromValue + 273.15;
+      } else {
+        result = fromValue;
+      }
+      break;
+
+    case 'Fahrenheit':
+      if (toOption === 'Celsius') {
+        result = (fromValue - 32) * 5 / 9;
+      } else if (toOption === 'Kelvin') {
+        result = (fromValue - 32) * 5 / 9 + 273.15;
+      } else {
+        result = fromValue;
+      }
+      break;
+
+    case 'Kelvin':
+      if (toOption === 'Fahrenheit') {
+        result = (fromValue - 273.15) * 9 / 5 + 32;
+      } else if (toOption === 'Celsius') {
+        result = fromValue - 273.15;
+      } else {
+        result = fromValue;
+      }
+      break;
+
+    default:
+      result = fromValue;
+      break;
+  }
+
+  if (unit === firstUnitText) {
+    secondUnitText.textContent = result;
+  } else {
+    firstUnitText.textContent = result;
+  }
+}
