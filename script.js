@@ -36,6 +36,18 @@ const secondUnitText = document.querySelector('.second-unit-result');
 
 let convertFunction;
 
+const weightAndMass = [
+  {name: 'Milligrams', toKilograms: 0.000001},
+  {name: 'Grams', toKilograms: 0.001},
+  {name: 'Kilograms', toKilograms: 1},
+  {name: 'American tones', toKilograms: 907.18474},
+  {name: 'Tones', toKilograms: 1000},
+  {name: 'English tones', toKilograms: 1016.0469088},
+  {name: 'Carat', toKilograms: 0.0002},
+  {name: 'Ounces', toKilograms: 0.0283495231},
+  {name: 'Pounds', toKilograms: 0.45359237},
+];
+
 const temperature = [
   {name: 'Celsius'}, 
   {name: 'Fahrenheit'},
@@ -50,7 +62,7 @@ const time = [
   {name: 'Hours', toSeconds: 3600},
   {name: 'Days', toSeconds: 86400},
   {name: 'Weeks', toSeconds: 604800},
-  {name: 'Years', toSeconds: 31557600},
+  {name: 'Years', toSeconds: 31557600}
 ];
 
 // numpad
@@ -224,6 +236,9 @@ function getFromToModeConvertFunction() {
   let func; 
 
   switch (topBarTitle.textContent) {
+    case 'Weight & Mass':
+      func = convertWeightAndMass;
+      break;
     case 'Temperature':
       func = convertTemperature;
       break;
@@ -286,9 +301,21 @@ selectCurrencyMode.addEventListener('click', () => {
 })
 
 selectWeightAndMassMode.addEventListener('click', () => {
-  alert('То на новий рік');
-  // topBarTitle.innerText = 'Weight & Mass';
-  // hideModeSelection();
+  isCurrentFromToMode = true;
+  topBarTitle.innerText = 'Weight & Mass';
+  convertFunction = getFromToModeConvertFunction();
+
+  showElement(displayFromToMode, 'block');
+  changeListValues(weightAndMass);
+  firstUnitText.textContent = '0';
+  secondUnitText.textContent = '0';
+  firstUnitText.style.fontWeight = '700';
+  secondUnitText.style.fontWeight = '400';
+  lastUnit = firstUnitText;
+  showElement(numpad, 'grid');
+  displayModeSmallest();
+
+  hideModeSelection();
 })
 
 selectTemperatureMode.addEventListener('click', () => {
@@ -842,7 +869,6 @@ function convertValue(unit, convertFunction) {
 }
 
 // Temperature
-// const temperature = ['Celsius', 'Fahrenheit', 'Kelvin'];
 
 function convertTemperature(fromOption, toOption, fromValue) {
   let result;
@@ -887,16 +913,6 @@ function convertTemperature(fromOption, toOption, fromValue) {
 }
 
 // Time
-// const time = [
-//   {name: 'Microseconds', toSeconds: 1000000},
-//   {name: 'Milliseconds', toSeconds: 1000},
-//   {name: 'Seconds', toSeconds: 1},
-//   {name: 'Minutes', toSeconds: 60},
-//   {name: 'Hours', toSeconds: 3600},
-//   {name: 'Days', toSeconds: 86400},
-//   {name: 'Weeks', toSeconds: 604800},
-//   {name: 'Years', toSeconds: 31557600},
-// ];
 
 function convertTime(fromOption, toOption, fromValue) {
   let indexFrom = 0;
@@ -915,4 +931,25 @@ function convertTime(fromOption, toOption, fromValue) {
   const result = fromValue * time[indexFrom].toSeconds / time[indexTo].toSeconds;
   
   return isNaN(result) ? 'Error' : result;
+}
+
+// Weight and Mass
+
+function convertWeightAndMass(fromOption, toOption, fromValue) {
+  let indexFrom = 0;
+  let indexTo = 0;
+
+  while (indexFrom < weightAndMass.length) {
+    if (weightAndMass[indexFrom].name === fromOption) break;
+    else indexFrom++;
+  }
+
+  while (indexTo < weightAndMass.length) {
+    if (weightAndMass[indexTo].name === toOption) break;
+    else indexTo++;
+  }
+
+  const result = fromValue * weightAndMass[indexFrom].toKilograms / weightAndMass[indexTo].toKilograms;
+  
+  return isNaN(result) ? 'Error' : parseFloat(result.toFixed(10));
 }
