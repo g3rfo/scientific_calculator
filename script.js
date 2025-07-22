@@ -34,7 +34,24 @@ const secondUnit = document.querySelector('.second-unit');
 const firstUnitText = document.querySelector('.first-unit-result');
 const secondUnitText = document.querySelector('.second-unit-result');
 
-const temperature = ['Celsius', 'Fahrenheit', 'Kelvin'];
+let convertFunction;
+
+const temperature = [
+  {name: 'Celsius'}, 
+  {name: 'Fahrenheit'},
+  {name: 'Kelvin'}
+];
+
+const time = [
+  {name: 'Microseconds', toSeconds: 0.000001},
+  {name: 'Milliseconds', toSeconds: 0.001},
+  {name: 'Seconds', toSeconds: 1},
+  {name: 'Minutes', toSeconds: 60},
+  {name: 'Hours', toSeconds: 3600},
+  {name: 'Days', toSeconds: 86400},
+  {name: 'Weeks', toSeconds: 604800},
+  {name: 'Years', toSeconds: 31557600},
+];
 
 // numpad
 const numpad = document.querySelector('.numpad');
@@ -203,6 +220,23 @@ function getExpressionInBrackets(line) {
   return { openIndex, closeIndex, insideBrackets, numArray };
 }
 
+function getFromToModeConvertFunction() {
+  let func; 
+
+  switch (topBarTitle.textContent) {
+    case 'Temperature':
+      func = convertTemperature;
+      break;
+    case 'Time':
+      func = convertTime;
+      break;
+    default:
+      break;
+  }
+
+  return func;
+}
+
 // change-mode handling
 
 openModeSelection.addEventListener('click', () => {
@@ -260,13 +294,15 @@ selectWeightAndMassMode.addEventListener('click', () => {
 selectTemperatureMode.addEventListener('click', () => {
   isCurrentFromToMode = true;
   topBarTitle.innerText = 'Temperature';
+  convertFunction = getFromToModeConvertFunction();
 
   showElement(displayFromToMode, 'block');
   changeListValues(temperature);
   firstUnitText.textContent = '0';
   secondUnitText.textContent = '0';
+  firstUnitText.style.fontWeight = '700';
   secondUnitText.style.fontWeight = '400';
-
+  lastUnit = firstUnitText;
   showElement(numpad, 'grid');
   displayModeSmallest();
 
@@ -280,9 +316,21 @@ selectAreaMode.addEventListener('click', () => {
 })
 
 selectTimeMode.addEventListener('click', () => {
-  alert('То на новий рік');
-  // topBarTitle.innerText = 'Time';
-  // hideModeSelection();
+  isCurrentFromToMode = true;
+  topBarTitle.innerText = 'Time';
+  convertFunction = getFromToModeConvertFunction();
+
+  showElement(displayFromToMode, 'block');
+  changeListValues(time);
+  firstUnitText.textContent = '0';
+  secondUnitText.textContent = '0';
+  firstUnitText.style.fontWeight = '700';
+  secondUnitText.style.fontWeight = '400';
+  lastUnit = firstUnitText;
+  showElement(numpad, 'grid');
+  displayModeSmallest();
+
+  hideModeSelection();
 })
 
 selectPowerMode.addEventListener('click', () => {
@@ -328,7 +376,7 @@ numpad.addEventListener('click', (event) => {
     if (isCurrentFromToMode) {
       lastUnit.textContent = '0';
 
-      convertTemperature(lastUnit);
+      convertValue(lastUnit, convertFunction);
       setFittedFontSize(firstUnitText, resultFontSize);
       setFittedFontSize(secondUnitText, resultFontSize);
     } else {
@@ -357,7 +405,7 @@ numpad.addEventListener('click', (event) => {
         lastUnit.textContent = lastUnit.textContent.slice(0, textLength - 1);
       }
 
-      convertTemperature(lastUnit);
+      convertValue(lastUnit, convertFunction);
       setFittedFontSize(firstUnitText, resultFontSize);
       setFittedFontSize(secondUnitText, resultFontSize);
     } else {
@@ -386,7 +434,8 @@ numpad.addEventListener('click', (event) => {
         lastUnit.textContent += symbol;
       }
 
-      convertTemperature(lastUnit);
+      
+      convertValue(lastUnit, convertFunction);
       setFittedFontSize(firstUnitText, resultFontSize);
       setFittedFontSize(secondUnitText, resultFontSize);
     } else {
@@ -409,7 +458,7 @@ numpad.addEventListener('click', (event) => {
         lastUnit.textContent = '-' + lastUnit.textContent;
       }
 
-      convertTemperature(lastUnit);
+      convertValue(lastUnit, convertFunction);
       setFittedFontSize(firstUnitText, resultFontSize);
       setFittedFontSize(secondUnitText, resultFontSize);
     } else {
@@ -731,12 +780,12 @@ function changeListValues(listName) {
 
   listName.forEach(element => {
     let newElement1 = document.createElement('option');
-    newElement1.value = element;
-    newElement1.textContent = element;
+    newElement1.value = element.name;
+    newElement1.textContent = element.name;
 
     let newElement2 = document.createElement('option');
-    newElement2.value = element;
-    newElement2.textContent = element;
+    newElement2.value = element.name;
+    newElement2.textContent = element.name;
 
     firstSelectionList.appendChild(newElement1);
     secondSelectionList.appendChild(newElement2);
@@ -757,23 +806,20 @@ secondUnitText.addEventListener('click', () => {
   firstUnitText.style.fontWeight = '400';
 })
 
-// temperature
-// const temperature = ['Celsius', 'Fahrenheit', 'Kelvin'];
-
 firstSelectionList.addEventListener('change', () => {
-  convertTemperature(lastUnit);
+  convertValue(lastUnit, convertFunction);
   setFittedFontSize(secondUnitText, resultFontSize);
 })
 
 secondSelectionList.addEventListener('change', () => {
-  convertTemperature(lastUnit);
+  convertValue(lastUnit, convertFunction);
   setFittedFontSize(firstUnitText, resultFontSize);
 })
 
-function convertTemperature(unit) {
+function convertValue(unit, convertFunction) {
   let from;
   let to;
-
+  
   if (unit === firstUnitText) {
     from = firstSelectionList;
     to = secondSelectionList;
@@ -781,10 +827,24 @@ function convertTemperature(unit) {
     from = secondSelectionList;
     to = firstSelectionList;
   }
-
+  
   const fromOption = from.value;
   const toOption = to.value;
   const fromValue = parseFloat(lastUnit.textContent);
+  
+  const result = convertFunction(fromOption, toOption, fromValue);
+  
+  if (unit === firstUnitText) {
+    secondUnitText.textContent = result;
+  } else {
+    firstUnitText.textContent = result;
+  }
+}
+
+// Temperature
+// const temperature = ['Celsius', 'Fahrenheit', 'Kelvin'];
+
+function convertTemperature(fromOption, toOption, fromValue) {
   let result;
 
   switch (fromOption) {
@@ -823,9 +883,36 @@ function convertTemperature(unit) {
       break;
   }
 
-  if (unit === firstUnitText) {
-    secondUnitText.textContent = result;
-  } else {
-    firstUnitText.textContent = result;
+  return isNaN(result) ? 'Error' : result;
+}
+
+// Time
+// const time = [
+//   {name: 'Microseconds', toSeconds: 1000000},
+//   {name: 'Milliseconds', toSeconds: 1000},
+//   {name: 'Seconds', toSeconds: 1},
+//   {name: 'Minutes', toSeconds: 60},
+//   {name: 'Hours', toSeconds: 3600},
+//   {name: 'Days', toSeconds: 86400},
+//   {name: 'Weeks', toSeconds: 604800},
+//   {name: 'Years', toSeconds: 31557600},
+// ];
+
+function convertTime(fromOption, toOption, fromValue) {
+  let indexFrom = 0;
+  let indexTo = 0;
+
+  while (indexFrom < time.length) {
+    if (time[indexFrom].name === fromOption) break;
+    else indexFrom++;
   }
+
+  while (indexTo < time.length) {
+    if (time[indexTo].name === toOption) break;
+    else indexTo++;
+  }
+
+  const result = fromValue * time[indexFrom].toSeconds / time[indexTo].toSeconds;
+  
+  return isNaN(result) ? 'Error' : result;
 }
