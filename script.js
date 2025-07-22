@@ -54,6 +54,20 @@ const temperature = [
   {name: 'Kelvin'}
 ];
 
+const area = [
+  {name: 'Square millimeters', toSquareMeters: 0.000001},
+  {name: 'Square centimeters', toSquareMeters: 0.0001},
+  {name: 'Square meters', toSquareMeters: 1},
+  {name: 'Hectares', toSquareMeters: 10000},
+  {name: 'Square kilometers', toSquareMeters: 1000000},
+  {name: 'Square inches', toSquareMeters: 0.000645},
+  {name: 'Square inches', toSquareMeters: 0.000645},
+  {name: 'Square feet', toSquareMeters: 0.092903},
+  {name: 'Square yards', toSquareMeters: 0.836127},
+  {name: 'Acres', toSquareMeters: 4046.856},
+  {name: 'Square miles', toSquareMeters: 2589988}
+];
+
 const time = [
   {name: 'Microseconds', toSeconds: 0.000001},
   {name: 'Milliseconds', toSeconds: 0.001},
@@ -242,6 +256,9 @@ function getFromToModeConvertFunction() {
     case 'Temperature':
       func = convertTemperature;
       break;
+    case 'Area':
+      func = convertArea;
+      break;
     case 'Time':
       func = convertTime;
       break;
@@ -337,9 +354,21 @@ selectTemperatureMode.addEventListener('click', () => {
 })
 
 selectAreaMode.addEventListener('click', () => {
-  alert('То на новий рік');
-  // topBarTitle.innerText = 'Area';
-  // hideModeSelection();
+  isCurrentFromToMode = true;
+  topBarTitle.innerText = 'Area';
+  convertFunction = getFromToModeConvertFunction();
+
+  showElement(displayFromToMode, 'block');
+  changeListValues(area);
+  firstUnitText.textContent = '0';
+  secondUnitText.textContent = '0';
+  firstUnitText.style.fontWeight = '700';
+  secondUnitText.style.fontWeight = '400';
+  lastUnit = firstUnitText;
+  showElement(numpad, 'grid');
+  displayModeSmallest();
+
+  hideModeSelection();
 })
 
 selectTimeMode.addEventListener('click', () => {
@@ -910,6 +939,27 @@ function convertTemperature(fromOption, toOption, fromValue) {
   }
 
   return isNaN(result) ? 'Error' : result;
+}
+
+// Area
+
+function convertArea(fromOption, toOption, fromValue) {
+  let indexFrom = 0;
+  let indexTo = 0;
+
+  while (indexFrom < area.length) {
+    if (area[indexFrom].name === fromOption) break;
+    else indexFrom++;
+  }
+
+  while (indexTo < area.length) {
+    if (area[indexTo].name === toOption) break;
+    else indexTo++;
+  }
+
+  const result = fromValue * area[indexFrom].toSquareMeters / area[indexTo].toSquareMeters;
+  
+  return isNaN(result) ? 'Error' : parseFloat(result.toFixed(20));
 }
 
 // Time
