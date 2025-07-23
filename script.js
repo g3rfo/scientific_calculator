@@ -92,6 +92,21 @@ const power = [
   {name: 'Foot pound-force/hour', toWatt: 0.0003766161}
 ];
 
+const data = [
+  {name: 'Bits', toMegabytes: 0.000000125},
+  {name: 'Bytes', toMegabytes: 0.000001},
+  {name: 'Kilobits', toMegabytes: 0.000125},
+  {name: 'Kilobytes', toMegabytes: 0.001},
+  {name: 'Megabits', toMegabytes: 0.125},
+  {name: 'Megabytes', toMegabytes: 1},
+  {name: 'Gigabits', toMegabytes: 125},
+  {name: 'Gigabytes', toMegabytes: 1000},
+  {name: 'Terabits', toMegabytes: 125000},
+  {name: 'Terabytes', toMegabytes: 1000000},
+  {name: 'Petabits', toMegabytes: 125000000},
+  {name: 'Petabytes', toMegabytes: 1000000000}
+];
+
 // numpad
 const numpad = document.querySelector('.numpad');
 const numpadButtons = document.querySelectorAll('.numpad-button');
@@ -278,6 +293,9 @@ function getFromToModeConvertFunction() {
     case 'Power':
       func = convertPower;
       break;
+    case 'Data':
+      func = convertData;
+      break;
     default:
       break;
   }
@@ -424,9 +442,21 @@ selectPowerMode.addEventListener('click', () => {
 })
 
 selectDataMode.addEventListener('click', () => {
-  alert('То на новий рік');
-  // topBarTitle.innerText = 'Data';
-  // hideModeSelection();
+  isCurrentFromToMode = true;
+  topBarTitle.innerText = 'Data';
+  convertFunction = getFromToModeConvertFunction();
+
+  showElement(displayFromToMode, 'block');
+  changeListValues(data);
+  firstUnitText.textContent = '0';
+  secondUnitText.textContent = '0';
+  firstUnitText.style.fontWeight = '700';
+  secondUnitText.style.fontWeight = '400';
+  lastUnit = firstUnitText;
+  showElement(numpad, 'grid');
+  displayModeSmallest();
+
+  hideModeSelection();
 })
 
 // standart and sciensific calculator
@@ -1054,3 +1084,22 @@ function convertPower(fromOption, toOption, fromValue) {
 }
 
 // Data
+
+function convertData(fromOption, toOption, fromValue) {
+  let indexFrom = 0;
+  let indexTo = 0;
+
+  while (indexFrom < data.length) {
+    if (data[indexFrom].name === fromOption) break;
+    else indexFrom++;
+  }
+
+  while (indexTo < data.length) {
+    if (data[indexTo].name === toOption) break;
+    else indexTo++;
+  }
+
+  const result = fromValue * data[indexFrom].toMegabytes / data[indexTo].toMegabytes;
+  
+  return isNaN(result) ? 'Error' : parseFloat(result.toFixed(10));
+}
