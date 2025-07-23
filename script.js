@@ -79,6 +79,19 @@ const time = [
   {name: 'Years', toSeconds: 31557600}
 ];
 
+const power = [
+  {name: 'Microwatt', toWatt: 0.000001},
+  {name: 'Milliwatt', toWatt: 0.001},
+  {name: 'Watt', toWatt: 1},
+  {name: 'Kilowatt', toWatt: 1000},
+  {name: 'Megawatt', toWatt: 1000000},
+  {name: 'Gigawatt', toWatt: 1000000000},
+  {name: 'Horsepower', toWatt: 745.6999},
+  {name: 'Foot pound-force/second', toWatt: 1.3558179483},
+  {name: 'Foot pound-force/minute', toWatt: 0.0225969658},
+  {name: 'Foot pound-force/hour', toWatt: 0.0003766161}
+];
+
 // numpad
 const numpad = document.querySelector('.numpad');
 const numpadButtons = document.querySelectorAll('.numpad-button');
@@ -262,6 +275,9 @@ function getFromToModeConvertFunction() {
     case 'Time':
       func = convertTime;
       break;
+    case 'Power':
+      func = convertPower;
+      break;
     default:
       break;
   }
@@ -390,9 +406,21 @@ selectTimeMode.addEventListener('click', () => {
 })
 
 selectPowerMode.addEventListener('click', () => {
-  alert('То на новий рік');
-  // topBarTitle.innerText = 'Power';
-  // hideModeSelection();
+  isCurrentFromToMode = true;
+  topBarTitle.innerText = 'Power';
+  convertFunction = getFromToModeConvertFunction();
+
+  showElement(displayFromToMode, 'block');
+  changeListValues(power);
+  firstUnitText.textContent = '0';
+  secondUnitText.textContent = '0';
+  firstUnitText.style.fontWeight = '700';
+  secondUnitText.style.fontWeight = '400';
+  lastUnit = firstUnitText;
+  showElement(numpad, 'grid');
+  displayModeSmallest();
+
+  hideModeSelection();
 })
 
 selectDataMode.addEventListener('click', () => {
@@ -1003,3 +1031,26 @@ function convertWeightAndMass(fromOption, toOption, fromValue) {
   
   return isNaN(result) ? 'Error' : parseFloat(result.toFixed(10));
 }
+
+// Power
+
+function convertPower(fromOption, toOption, fromValue) {
+  let indexFrom = 0;
+  let indexTo = 0;
+
+  while (indexFrom < power.length) {
+    if (power[indexFrom].name === fromOption) break;
+    else indexFrom++;
+  }
+
+  while (indexTo < power.length) {
+    if (power[indexTo].name === toOption) break;
+    else indexTo++;
+  }
+
+  const result = fromValue * power[indexFrom].toWatt / power[indexTo].toWatt;
+  
+  return isNaN(result) ? 'Error' : parseFloat(result.toFixed(10));
+}
+
+// Data
