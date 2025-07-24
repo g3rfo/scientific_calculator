@@ -145,7 +145,7 @@ sup {
 
 .display-from-to-mode {
   display: none;
-  padding-bottom: 3rem;
+  padding-block: 3rem;
   width: 100%;
 }
 
@@ -155,6 +155,7 @@ sup {
 }
 
 .select {
+  display: block;
   background: transparent;
   border: none;
   font-weight: 400;
@@ -166,6 +167,23 @@ sup {
 
 option {
   background: var(--grey-color);
+}
+
+.calendar {
+  display: block;
+  padding-block: 1rem;
+  font-size: 1.5rem;
+  height: 2rem;
+  color: var(--white-color);
+  background: var(--grey-color);
+  border: none;
+}
+
+.date-result {
+  display: block;
+  padding-top: 4rem;
+  font-size: 1.75rem;
+  font-weight: 400;
 }
 
 /* ---numpad--- */

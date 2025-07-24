@@ -7,7 +7,7 @@ const openHistory = document.querySelector('.history-button');
 const modeSelectionAside = document.querySelector('.mode-selection');
 const selectStandartMode = document.querySelector('.mode-1');
 const selectScientificMode = document.querySelector('.mode-2');
-const selectDataCalculationMode = document.querySelector('.mode-3');
+const selectDateCalculationMode = document.querySelector('.mode-3');
 const selectCurrencyMode = document.querySelector('.mode-4');
 const selectWeightAndMassMode = document.querySelector('.mode-5');
 const selectTemperatureMode = document.querySelector('.mode-6');
@@ -25,6 +25,7 @@ const resultFontSize = getPxToNumberValue(getComputedStyle(result).fontSize);
 
 // display from to mode
 let isCurrentFromToMode = false;
+let isCurrentDateMode = false;
 
 const displayFromToMode = document.querySelector('.display-from-to-mode');
 const firstSelectionList = document.getElementById('first-select');
@@ -33,7 +34,9 @@ const firstUnit = document.querySelector('.first-unit');
 const secondUnit = document.querySelector('.second-unit');
 const firstUnitText = document.querySelector('.first-unit-result');
 const secondUnitText = document.querySelector('.second-unit-result');
-
+const firstDate = document.getElementById('first-date');
+const secondDate = document.getElementById('second-date');
+const dateResult = document.querySelector('.date-result');
 let convertFunction;
 
 const weightAndMass = [
@@ -149,7 +152,15 @@ function hideModeSelection() {
   setTimeout(() => hideElement(modeSelectionAside), 300);
 }
 
-function displayModeSmallest() {
+function numpadModeHidden() {
+  numpad.style.opacity = '0';
+  numpad.style.pointerEvents = 'none';
+}
+
+function numpadModeSmallest() {
+  numpad.style.opacity = '1';
+  numpad.style.pointerEvents = 'all';
+
   numpad.style.gridTemplateRows = 'repeat(4, 80px)';
   numpad.style.gridTemplateColumns = 'repeat(4, 80px)';
   numpad.style.gap = '21px 15px';
@@ -177,7 +188,10 @@ function displayModeSmallest() {
   buttonEquals.style.display = 'none';
 }
 
-function displayModeStandart() {
+function numpadModeStandart() {
+  numpad.style.opacity = '1';
+  numpad.style.pointerEvents = 'all';
+
   numpad.style.gridTemplateRows = 'repeat(5, 80px)';
   numpad.style.gridTemplateColumns = 'repeat(4, 80px)';
   numpad.style.gap = '21px 15px';
@@ -206,7 +220,10 @@ function displayModeStandart() {
   resetDisplayValue(result, '0');
 }
 
-function displayModeScientific() {
+function numpadModeScientific() {
+  numpad.style.opacity = '1';
+  numpad.style.pointerEvents = 'all';
+
   numpad.style.gridTemplateRows = 'repeat(7, 60px)';
   numpad.style.gridTemplateColumns = 'repeat(5, 60px)';
   numpad.style.gap = '10px 15px';
@@ -233,6 +250,22 @@ function displayModeScientific() {
 
   resetDisplayValue(expression, '');
   resetDisplayValue(result, '0');
+}
+
+function dateModeHidden() {
+  hideElement(firstDate);
+  hideElement(secondDate);
+  hideElement(dateResult);
+  showElement(firstSelectionList, 'block');
+  showElement(secondSelectionList, 'block');
+}
+
+function dateModeShowed() {
+  hideElement(firstSelectionList);
+  hideElement(secondSelectionList);
+  showElement(firstDate, 'block');
+  showElement(secondDate, 'block');
+  showElement(dateResult, 'block');
 }
 
 function getPxToNumberValue(value) {
@@ -276,8 +309,12 @@ function getExpressionInBrackets(line) {
 
 function getFromToModeConvertFunction() {
   let func; 
+  isCurrentDateMode = false;
 
   switch (topBarTitle.textContent) {
+    case 'Date Calculator':
+      isCurrentDateMode = true;
+      break;
     case 'Weight & Mass':
       func = convertWeightAndMass;
       break;
@@ -322,7 +359,7 @@ selectStandartMode.addEventListener('click', () => {
   topBarTitle.innerText = 'Standart';
   showElement(display, 'flex');
   showElement(numpad, 'grid');
-  displayModeStandart();
+  numpadModeStandart();
   hideModeSelection();
 })
 
@@ -331,7 +368,7 @@ selectScientificMode.addEventListener('click', () => {
   topBarTitle.innerText = 'Scientific';
   showElement(display, 'flex');
   showElement(numpad, 'grid');
-  displayModeScientific();
+  numpadModeScientific();
   hideModeSelection();
 })
 
@@ -339,10 +376,28 @@ openHistory.addEventListener('click', () => {
   alert('То на новий рік');
 })
 
-selectDataCalculationMode.addEventListener('click', () => {
-  alert('То на новий рік');
-  // topBarTitle.innerText = 'Data Calculation';
-  // hideModeSelection();
+selectDateCalculationMode.addEventListener('click', () => {
+  isCurrentFromToMode = true;
+  topBarTitle.innerText = 'Date Calculator';
+  convertFunction = getFromToModeConvertFunction();
+
+  showElement(displayFromToMode, 'block');
+  firstUnitText.textContent = 'From';
+  secondUnitText.textContent = 'To';
+  firstUnitText.style.fontWeight = '400';
+  secondUnitText.style.fontWeight = '400';
+
+  dateModeShowed();
+  
+  const date = new Date().toISOString().slice(0, 10);
+  firstDate.value = date;
+  secondDate.value = date;
+
+  showElement(numpad, 'grid');
+  numpadModeSmallest();
+  numpadModeHidden();
+
+  hideModeSelection();
 })
 
 selectCurrencyMode.addEventListener('click', () => {
@@ -363,8 +418,9 @@ selectWeightAndMassMode.addEventListener('click', () => {
   firstUnitText.style.fontWeight = '700';
   secondUnitText.style.fontWeight = '400';
   lastUnit = firstUnitText;
+  dateModeHidden();
   showElement(numpad, 'grid');
-  displayModeSmallest();
+  numpadModeSmallest();
 
   hideModeSelection();
 })
@@ -381,8 +437,9 @@ selectTemperatureMode.addEventListener('click', () => {
   firstUnitText.style.fontWeight = '700';
   secondUnitText.style.fontWeight = '400';
   lastUnit = firstUnitText;
+  dateModeHidden();
   showElement(numpad, 'grid');
-  displayModeSmallest();
+  numpadModeSmallest();
 
   hideModeSelection();
 })
@@ -399,8 +456,9 @@ selectAreaMode.addEventListener('click', () => {
   firstUnitText.style.fontWeight = '700';
   secondUnitText.style.fontWeight = '400';
   lastUnit = firstUnitText;
+  dateModeHidden();
   showElement(numpad, 'grid');
-  displayModeSmallest();
+  numpadModeSmallest();
 
   hideModeSelection();
 })
@@ -417,8 +475,9 @@ selectTimeMode.addEventListener('click', () => {
   firstUnitText.style.fontWeight = '700';
   secondUnitText.style.fontWeight = '400';
   lastUnit = firstUnitText;
+  dateModeHidden();
   showElement(numpad, 'grid');
-  displayModeSmallest();
+  numpadModeSmallest();
 
   hideModeSelection();
 })
@@ -435,8 +494,9 @@ selectPowerMode.addEventListener('click', () => {
   firstUnitText.style.fontWeight = '700';
   secondUnitText.style.fontWeight = '400';
   lastUnit = firstUnitText;
+  dateModeHidden();
   showElement(numpad, 'grid');
-  displayModeSmallest();
+  numpadModeSmallest();
 
   hideModeSelection();
 })
@@ -453,8 +513,9 @@ selectDataMode.addEventListener('click', () => {
   firstUnitText.style.fontWeight = '700';
   secondUnitText.style.fontWeight = '400';
   lastUnit = firstUnitText;
+  dateModeHidden();
   showElement(numpad, 'grid');
-  displayModeSmallest();
+  numpadModeSmallest();
 
   hideModeSelection();
 })
@@ -907,6 +968,8 @@ function changeListValues(listName) {
 }
 
 firstUnitText.addEventListener('click', () => {
+  if (isCurrentDateMode) return;
+
   lastUnit = firstUnitText;
   isNewUnit = true;
   firstUnitText.style.fontWeight = '700';
@@ -914,6 +977,8 @@ firstUnitText.addEventListener('click', () => {
 })
 
 secondUnitText.addEventListener('click', () => {
+  if (isCurrentDateMode) return;
+
   lastUnit = secondUnitText;
   isNewUnit = true;
   secondUnitText.style.fontWeight = '700';
@@ -928,6 +993,14 @@ firstSelectionList.addEventListener('change', () => {
 secondSelectionList.addEventListener('change', () => {
   convertValue(lastUnit, convertFunction);
   setFittedFontSize(firstUnitText, resultFontSize);
+})
+
+firstDate.addEventListener('change', () => {
+  convertDate();
+})
+
+secondDate.addEventListener('change', () => {
+  convertDate();
 })
 
 function convertValue(unit, convertFunction) {
@@ -952,6 +1025,52 @@ function convertValue(unit, convertFunction) {
     secondUnitText.textContent = result;
   } else {
     firstUnitText.textContent = result;
+  }
+}
+
+// Date
+
+const msPerDay = 1000 * 60 * 60 * 24;
+const msPerWeek = msPerDay * 7;
+const msPerMonth = msPerWeek * 4.34;
+const msPerYear = msPerMonth * 12;
+
+function convertDate() {
+  let firstValue = new Date(firstDate.value);
+  let secondValue = new Date(secondDate.value);
+
+  firstValue = firstValue.getTime();
+  secondValue = secondValue.getTime();
+
+  let diff = Math.abs(firstValue - secondValue);
+  const inDays = Math.floor(diff / msPerDay);
+  console.log(firstValue, ' - ', secondValue, ' = ', diff);
+
+  const years = Math.floor(diff / msPerYear);
+  if (years) diff -= years * msPerYear;
+
+  const month = Math.floor(diff / msPerMonth);
+  if (month) diff -= month * msPerMonth;
+
+  const weeks = Math.floor(diff / msPerWeek);
+  if (weeks) diff -= weeks * msPerWeek;
+
+  const days = Math.floor(diff / msPerDay);
+  if (days) diff -= days * msPerDay;
+
+  let parts = [];
+  if (years) parts.push(` ${years} yr`);
+  if (month) parts.push(` ${month} mo`);
+  if (weeks) parts.push(` ${weeks} wks`);
+  if (days) parts.push(` ${days} days`);
+
+  if (inDays) {
+    dateResult.innerHTML = 
+      `${parts.join(', ')}<br><br>In Days: ${inDays}`;
+  } else if (inDays === 0){
+    dateResult.innerHTML = 'Same Day';
+  } else {
+    dateResult.innerHTML = 'Enter Second Date';
   }
 }
 
