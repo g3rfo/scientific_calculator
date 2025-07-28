@@ -1,3 +1,7 @@
+
+// Get API key from environment variable (defined in vite.config.js)
+const apiKey = import.meta.env.VITE_API_KEY;
+
 // top-bar
 const openModeSelection = document.querySelector('.change-mode-button');
 const topBarTitle = document.querySelector('.title');
@@ -36,8 +40,10 @@ const firstUnitText = document.querySelector('.first-unit-result');
 const secondUnitText = document.querySelector('.second-unit-result');
 const firstDate = document.getElementById('first-date');
 const secondDate = document.getElementById('second-date');
-const dateResult = document.querySelector('.date-result');
+const additionResult = document.querySelector('.addition-result');
 let convertFunction;
+
+let currency = [];
 
 const weightAndMass = [
   {name: 'Milligrams', toKilograms: 0.000001},
@@ -255,7 +261,7 @@ function numpadModeScientific() {
 function dateModeHidden() {
   hideElement(firstDate);
   hideElement(secondDate);
-  hideElement(dateResult);
+  hideElement(additionResult);
   showElement(firstSelectionList, 'block');
   showElement(secondSelectionList, 'block');
 }
@@ -265,7 +271,7 @@ function dateModeShowed() {
   hideElement(secondSelectionList);
   showElement(firstDate, 'block');
   showElement(secondDate, 'block');
-  showElement(dateResult, 'block');
+  showElement(additionResult, 'block')
 }
 
 function getPxToNumberValue(value) {
@@ -312,6 +318,9 @@ function getFromToModeConvertFunction() {
   isCurrentDateMode = false;
 
   switch (topBarTitle.textContent) {
+    case 'Currency':
+      func = convertCurrency;
+      break;
     case 'Date Calculator':
       isCurrentDateMode = true;
       break;
@@ -392,6 +401,7 @@ selectDateCalculationMode.addEventListener('click', () => {
   const date = new Date().toISOString().slice(0, 10);
   firstDate.value = date;
   secondDate.value = date;
+  additionResult.textContent = '';
 
   showElement(numpad, 'grid');
   numpadModeSmallest();
@@ -401,9 +411,35 @@ selectDateCalculationMode.addEventListener('click', () => {
 })
 
 selectCurrencyMode.addEventListener('click', () => {
-  alert('То на новий рік');
-  // topBarTitle.innerText = 'Currency';
-  // hideModeSelection();
+  isCurrentFromToMode = true;
+  topBarTitle.innerText = 'Currency';
+  convertFunction = getFromToModeConvertFunction();
+
+  showElement(displayFromToMode, 'block');
+  firstUnitText.textContent = '0';
+  secondUnitText.textContent = '0';
+  firstUnitText.style.fontWeight = '700';
+  secondUnitText.style.fontWeight = '400';
+  lastUnit = firstUnitText;
+  additionResult.textContent = '';
+
+  if (!currency || currency.length === 0) {
+    (async () => {
+      try {
+        currency = await fetchCurrencies();
+        changeListValues(currency);
+        alert('Data refreshed');
+      } catch (error) {
+        alert(error);
+      }
+    })();
+  }
+
+  dateModeHidden();
+  showElement(numpad, 'grid');
+  numpadModeSmallest();
+
+  hideModeSelection();
 })
 
 selectWeightAndMassMode.addEventListener('click', () => {
@@ -1065,13 +1101,50 @@ function convertDate() {
   if (days) parts.push(` ${days} days`);
 
   if (inDays) {
-    dateResult.innerHTML = 
+    additionResult.innerHTML = 
       `${parts.join(', ')}<br><br>In Days: ${inDays}`;
   } else if (inDays === 0){
-    dateResult.innerHTML = 'Same Day';
+    additionResult.innerHTML = 'Same Day';
   } else {
-    dateResult.innerHTML = 'Enter Second Date';
+    additionResult.innerHTML = 'Enter Second Date';
   }
+}
+
+// Currency
+
+const CURRENCIES_URL_ENDPOINT = 'https://api.exchangeratesapi.io/v1/';
+
+async function fetchCurrencies() {
+  const url = `${CURRENCIES_URL_ENDPOINT}latest?access_key=${apiKey}`;
+  const response = await fetch(url);
+  const data = await response.json();
+
+  let result = [];
+  
+  for (const [currency, rate] of Object.entries(data.rates)) {
+    result.push({ name: currency, toEUR: 1 / rate });
+  }
+
+  return result;
+}
+
+function convertCurrency(fromOption, toOption, fromValue) {
+  let indexFrom = 0;
+  let indexTo = 0;
+
+  while (indexFrom < currency.length) {
+    if (currency[indexFrom].name === fromOption) break;
+    else indexFrom++;
+  }
+
+  while (indexTo < currency.length) {
+    if (currency[indexTo].name === toOption) break;
+    else indexTo++;
+  }
+
+  const result = fromValue * currency[indexFrom].toEUR / currency[indexTo].toEUR;
+
+  return isNaN(result) ? 'Error' : parseFloat(result.toFixed(2));
 }
 
 // Temperature

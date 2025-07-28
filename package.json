@@ -1,0 +1,15 @@
+{
+  "name": "scientific-calculator",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.1"
+  },
+  "devDependencies": {
+    "vite": "^6.3.5"
+  }
+}

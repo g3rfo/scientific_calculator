@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scientific Calculator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+  <script type="module" crossorigin src="/assets/index-C6QBYyVX.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-sbNdNrnT.css">
+</head>
+<body>
+  <div class="calculator">
+    <aside class="mode-selection">
+      <button class="mode-button mode-1">Standart</button>
+      <button class="mode-button mode-2">Scientific</button>
+      <button class="mode-button mode-3">Date Calculation</button>
+      <button class="mode-button mode-4">Currency</button>
+      <button class="mode-button mode-5">Weight & Mass</button>
+      <button class="mode-button mode-6">Temperature</button>
+      <button class="mode-button mode-7">Area</button>
+      <button class="mode-button mode-8">Time</button>
+      <button class="mode-button mode-9">Power</button>
+      <button class="mode-button mode-10">Data</button>
+    </aside>
+
+    <div class="top-bar">
+      <button class="change-mode-button top-button">
+        <img src="data:image/svg+xml,%3csvg%20width='18'%20height='12'%20viewBox='0%200%2018%2012'%20fill='none'%20xmlns='http://www.w3.org/2000/svg'%3e%3cpath%20d='M0%2012H18V10H0V12ZM0%207H10V6V5H0V7ZM0%200V2H18V0H0Z'%20fill='white'/%3e%3c/svg%3e" alt="mode" class="icon icon-burger-menu">
+      </button>
+
+      <div class="current-mode-title">
+        <h1 class="title">Standart</h1>
+      </div>
+
+      <button class="history-button top-button">
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAACXBIWXMAAAsTAAALEwEAmpwYAAABZklEQVR4nN2US0oDQRRFm7TtROMwi9C4iggOBE1A3IOSoNENxJFmHX524graaPysIjpRwSMv3JYiVFeXipNcaELq3a5T1Ht9k2SuBSwC28AVMAImwCswBq6BPfPEbjaY+b8JPFKtZ6ATA6CAAKfOBrfACbAOrABLwBpwCOSObwjUqgCmG/2+AX0gDbyTAl15p5AYgOkD2CrzeNZbDqQdA/i+rhiAaj2Vn4DMZ/Bp8ANAqn6ZdpPfiABAdeuZ6fK/AE1Zxn8CAI2Sel31ia9oX6mpHgDk8uQ+SBXgQcXVAKARggSvSHljOioDeCAHiSPgWOsX7npRtOBCo5ZGQPY9YzoqHVMlpwWXqRsC+KRsQgGZlZk6Mtln3/Ka/O9tAO/Ap8V7lXnoQHoVYbegk9vmprOY09QcSNGTviZkWU9TDS3u3E5+HoxrD6it4KqS3flO9MYzkMwmwrIFuAde9NzZKKrmb+jc6Atk0/RVE9lJTgAAAABJRU5ErkJggg==" alt="history" class="icon icon-history">
+      </button>
+    </div>
+
+    <div class="display">
+      <div class="fit-text-wrap fit-text-wrap-expression">
+        <h1 class="expression"></h1>
+      </div>
+      <div class="fit-text-wrap fit-text-wrap-result">
+        <h1 class="result">0</h1>
+      </div>
+    </div>
+
+    <div class="display-from-to-mode">
+      <div class="fit-text-wrap fit-text-wrap-result first-unit">
+        <h1 class="first-unit-result">0</h1>
+      </div>
+
+      <select id="first-select" class="select"></select>
+      
+      <input type="date" id="first-date" class="calendar">
+
+      <div class="fit-text-wrap fit-text-wrap-result second-unit">
+        <h1 class="second-unit-result">0</h1>
+      </div>
+
+      <select id="second-select" class="select"></select>
+
+      <input type="date" id="second-date" class="calendar">
+
+      <h2 class="addition-result"></h2>
+    </div>
+
+    <div class="numpad">
+      <button class="numpad-button button-clear extended-button-clear">C</button>
+      <button class="numpad-button button-operator">%</button>
+      <button class="numpad-button button-const scientific-mode">π</button>
+      <button class="numpad-button button-const scientific-mode">e</button>
+      <button class="numpad-button button-delete extended-button-delete">
+        <img src="data:image/svg+xml,%3csvg%20width='59'%20height='35'%20viewBox='0%200%2059%2035'%20fill='none'%20xmlns='http://www.w3.org/2000/svg'%3e%3cmask%20id='path-1-inside-1_232_3'%20fill='white'%3e%3cpath%20d='M47.75%2010.0125L45.9875%208.25L39%2015.2375L32.0125%208.25L30.25%2010.0125L37.2375%2017L30.25%2023.9875L32.0125%2025.75L39%2018.7625L45.9875%2025.75L47.75%2023.9875L40.7625%2017L47.75%2010.0125Z'/%3e%3c/mask%3e%3cpath%20d='M47.75%2010.0125L45.9875%208.25L39%2015.2375L32.0125%208.25L30.25%2010.0125L37.2375%2017L30.25%2023.9875L32.0125%2025.75L39%2018.7625L45.9875%2025.75L47.75%2023.9875L40.7625%2017L47.75%2010.0125Z'%20fill='white'/%3e%3cpath%20d='M47.75%2010.0125L58.3566%2020.6191L68.9632%2010.0125L58.3566%20-0.594103L47.75%2010.0125ZM45.9875%208.25L56.5941%20-2.3566L45.9875%20-12.9632L35.3809%20-2.3566L45.9875%208.25ZM39%2015.2375L28.3934%2025.8441L39%2036.4507L49.6066%2025.8441L39%2015.2375ZM32.0125%208.25L42.6191%20-2.3566L32.0125%20-12.9632L21.4059%20-2.3566L32.0125%208.25ZM30.25%2010.0125L19.6434%20-0.594103L9.03679%2010.0125L19.6434%2020.6191L30.25%2010.0125ZM37.2375%2017L47.8441%2027.6066L58.4507%2017L47.8441%206.3934L37.2375%2017ZM30.25%2023.9875L19.6434%2013.3809L9.03679%2023.9875L19.6434%2034.5941L30.25%2023.9875ZM32.0125%2025.75L21.4059%2036.3566L32.0125%2046.9632L42.6191%2036.3566L32.0125%2025.75ZM39%2018.7625L49.6066%208.1559L39%20-2.4507L28.3934%208.1559L39%2018.7625ZM45.9875%2025.75L35.3809%2036.3566L45.9875%2046.9632L56.5941%2036.3566L45.9875%2025.75ZM47.75%2023.9875L58.3566%2034.5941L68.9632%2023.9875L58.3566%2013.3809L47.75%2023.9875ZM40.7625%2017L30.1559%206.3934L19.5493%2017L30.1559%2027.6066L40.7625%2017ZM58.3566%20-0.594103L56.5941%20-2.3566L35.3809%2018.8566L37.1434%2020.6191L58.3566%20-0.594103ZM35.3809%20-2.3566L28.3934%204.6309L49.6066%2025.8441L56.5941%2018.8566L35.3809%20-2.3566ZM49.6066%204.6309L42.6191%20-2.3566L21.4059%2018.8566L28.3934%2025.8441L49.6066%204.6309ZM21.4059%20-2.3566L19.6434%20-0.594103L40.8566%2020.6191L42.6191%2018.8566L21.4059%20-2.3566ZM19.6434%2020.6191L26.6309%2027.6066L47.8441%206.3934L40.8566%20-0.594103L19.6434%2020.6191ZM26.6309%206.3934L19.6434%2013.3809L40.8566%2034.5941L47.8441%2027.6066L26.6309%206.3934ZM19.6434%2034.5941L21.4059%2036.3566L42.6191%2015.1434L40.8566%2013.3809L19.6434%2034.5941ZM42.6191%2036.3566L49.6066%2029.3691L28.3934%208.1559L21.4059%2015.1434L42.6191%2036.3566ZM28.3934%2029.3691L35.3809%2036.3566L56.5941%2015.1434L49.6066%208.1559L28.3934%2029.3691ZM56.5941%2036.3566L58.3566%2034.5941L37.1434%2013.3809L35.3809%2015.1434L56.5941%2036.3566ZM58.3566%2013.3809L51.3691%206.3934L30.1559%2027.6066L37.1434%2034.5941L58.3566%2013.3809ZM51.3691%2027.6066L58.3566%2020.6191L37.1434%20-0.594103L30.1559%206.3934L51.3691%2027.6066Z'%20fill='white'%20mask='url(%23path-1-inside-1_232_3)'/%3e%3cpath%20d='M57.4997%201.5V33.5H16.903L2.67545%2018.2852L16.946%201.5H57.4997Z'%20stroke='white'%20stroke-width='3'/%3e%3c/svg%3e" alt="del" class="button-delete-img">
+      </button>
+      <button class="numpad-button button-math-expression scientific-mode">sin</button>
+      <button class="numpad-button button-math-expression scientific-mode">cos</button>
+      <button class="numpad-button button-math-expression scientific-mode">tan</button>
+      <button class="numpad-button button-math-expression scientific-mode">|x|</button>
+      <button class="numpad-button button-math-expression scientific-mode">x⁻¹</button>
+      <button class="numpad-button button-operator scientific-mode">x²</button>
+      <button class="numpad-button button-brackets scientific-mode">(</button>
+      <button class="numpad-button button-brackets scientific-mode">)</button>
+      <button class="numpad-button button-math-expression scientific-mode">√</button>
+      <button class="numpad-button button-operator">÷</button>
+      <button class="numpad-button button-operator scientific-mode">xʸ</button>
+      <button class="numpad-button button-number">7</button>
+      <button class="numpad-button button-number">8</button>
+      <button class="numpad-button button-number">9</button>
+      <button class="numpad-button button-operator">×</button>
+      <button class="numpad-button button-math-expression scientific-mode">log</button>
+      <button class="numpad-button button-number">4</button>
+      <button class="numpad-button button-number">5</button>
+      <button class="numpad-button button-number">6</button>
+      <button class="numpad-button button-operator">+</button>
+      <button class="numpad-button button-math-expression scientific-mode">ln</button>
+      <button class="numpad-button button-number">1</button>
+      <button class="numpad-button button-number">2</button>
+      <button class="numpad-button button-number">3</button>
+      <button class="numpad-button button-operator">-</button>
+      <button class="numpad-button button-switchToNegative scientific-mode">+/-</button>
+      <button class="numpad-button button-number extended-button-zero">0</button>
+      <button class="numpad-button button-decimal">.</button>
+      <button class="numpad-button button-equals">=</button>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/gh/STRML/textFit@v2.4.0/textFit.min.js"></script>
+</body>
+</html>
