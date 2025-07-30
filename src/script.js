@@ -7,6 +7,12 @@ const openModeSelection = document.querySelector('.change-mode-button');
 const topBarTitle = document.querySelector('.title');
 const openHistory = document.querySelector('.history-button');
 
+// history
+const historyAside = document.querySelector('.history');
+const closeHistory = document.querySelector('.history-aside-button');
+const historyNotes = document.querySelector('.history-content');
+const maxHistoryLenght = 10;
+
 // mode-selection-aside
 const modeSelectionAside = document.querySelector('.mode-selection');
 const selectStandartMode = document.querySelector('.mode-1');
@@ -127,6 +133,7 @@ const scientificModeButtons = document.querySelectorAll('.scientific-mode');
 const operatorButtons = document.querySelectorAll('.button-operator');
 
 // math
+
 const PI = Math.PI;
 const E = Math.E;
 
@@ -349,6 +356,45 @@ function getFromToModeConvertFunction() {
   return func;
 }
 
+function addToHistory(note) {
+  if (historyNotes.childElementCount === maxHistoryLenght) {
+    historyNotes.lastChild.remove();
+  }
+
+  const noteWrap = document.createElement('div');
+  noteWrap.classList.add('history-notes-wrap');
+  
+  const noteElement = document.createElement('h1');
+  noteElement.classList.add('history-notes');
+  noteElement.innerText = note;
+  
+  noteWrap.appendChild(noteElement);
+  historyNotes.insertBefore(noteWrap, historyNotes.firstChild);
+}
+
+openHistory.addEventListener('click', () => {
+  showElement(closeHistory, 'block');
+  showElement(historyAside, 'flex');
+  openHistory.style.pointerEvents = 'none';
+  requestAnimationFrame(() => {
+    historyAside.style.transform = 'translateX(0)';
+  });
+  setTimeout(() => {
+    closeHistory.style.pointerEvents = 'auto';
+  }, 300);
+});
+
+closeHistory.addEventListener('click', () => {
+  historyAside.style.transform = 'translateX(100%)';
+  closeHistory.style.pointerEvents = 'none';
+  setTimeout(() => {
+    hideElement(historyAside);
+    hideElement(closeHistory);
+    openHistory.style.pointerEvents = 'auto';
+  }, 300);
+});
+
+
 // change-mode handling
 
 openModeSelection.addEventListener('click', () => {
@@ -379,10 +425,6 @@ selectScientificMode.addEventListener('click', () => {
   showElement(numpad, 'grid');
   numpadModeScientific();
   hideModeSelection();
-})
-
-openHistory.addEventListener('click', () => {
-  alert('То на новий рік');
 })
 
 selectDateCalculationMode.addEventListener('click', () => {
@@ -428,7 +470,6 @@ selectCurrencyMode.addEventListener('click', () => {
       try {
         currency = await fetchCurrencies();
         changeListValues(currency);
-        alert('Data refreshed');
       } catch (error) {
         alert(error);
       }
@@ -958,6 +999,8 @@ numpad.addEventListener('click', (event) => {
       } catch (error) {
         result.textContent = 'Error';
       }
+
+      addToHistory(expression.textContent + result.textContent);
 
       setFittedFontSize(result, resultFontSize);
       expressionToCalc = '';

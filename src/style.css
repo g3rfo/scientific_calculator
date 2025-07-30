@@ -49,7 +49,8 @@ sup {
 
 /* ---mode-selection-aside--- */
 
-.mode-selection {
+.mode-selection,
+.history {
   position: absolute;
   padding: 24px;
   flex-direction: column;
@@ -57,7 +58,7 @@ sup {
   height: 100%;
   top: 0;
   background: var(--light-grey-color);
-  z-index: 1;
+  z-index: 2;
   
   transition: transform 0.3s ease;
   transform: translateX(-100%);
@@ -79,6 +80,7 @@ sup {
 /* ---top-bar--- */
 
 .top-bar {
+  position: relative;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -97,6 +99,44 @@ sup {
 .icon-burger-menu {
   width: 18px;
   height: 12px;
+}
+
+/* ---history--- */
+
+.history {
+  transform: translateX(100%);
+  align-items: center;
+}
+
+.history-aside-button {
+  position: absolute;
+  z-index: 3;
+  right: 24px;
+  display: none;
+}
+
+.history-content {
+  margin-top: 4.5rem;
+  width: 100%;
+  overflow-y: auto;
+}
+
+.history-notes {
+  position: relative;
+  display: block;
+  width: 100%;
+  font-size: 2rem;
+  line-height: 175%;
+  font-weight: 400;
+  text-align: right;
+}
+
+.history-notes-wrap {
+  box-sizing: border-box;
+  margin-bottom: 3rem;
+  display: block;
+  width: 100%;
+  overflow-x: auto;
 }
 
 /* ---display--- */
