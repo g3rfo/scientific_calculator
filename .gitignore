@@ -1,0 +1,14 @@
+# Environment variables (contains API keys)
+.env
+
+# Node modules
+node_modules/
+
+# Logs
+*.log
+
+# VS Code
+.vscode/
+
+# Development files (keep source files but not development artifacts)
+# Note: dist/ is NOT ignored because GitHub Pages needs it

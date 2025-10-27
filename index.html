@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scientific Calculator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="src/style.css">
+</head>
+<body>
+  <div class="calculator">
+    <aside class="mode-selection">
+      <button class="mode-button mode-1">Standart</button>
+      <button class="mode-button mode-2">Scientific</button>
+      <button class="mode-button mode-3">Date Calculation</button>
+      <button class="mode-button mode-4">Currency</button>
+      <button class="mode-button mode-5">Weight & Mass</button>
+      <button class="mode-button mode-6">Temperature</button>
+      <button class="mode-button mode-7">Area</button>
+      <button class="mode-button mode-8">Time</button>
+      <button class="mode-button mode-9">Power</button>
+      <button class="mode-button mode-10">Data</button>
+    </aside>
+    
+    <button class="history-aside-button top-button">
+      <img src="src/Images/history-icon.png" alt="history" class="icon icon-history">
+    </button>
+
+    <aside class="history">
+      <div>
+        <h1 class="history-title">History</h1>
+      </div>
+
+      <div class="history-content"></div>
+    </aside>
+    
+    <div class="top-bar">
+      <button class="change-mode-button top-button">
+        <img src="src/Images/burger-icon.svg" alt="mode" class="icon icon-burger-menu">
+      </button>
+
+      <div class="current-mode-title">
+        <h1 class="title">Standart</h1>
+      </div>
+
+      <button class="history-button top-button">
+        <img src="src/Images/history-icon.png" alt="history" class="icon icon-history">
+      </button>
+    </div>
+
+    <div class="display">
+      <div class="fit-text-wrap fit-text-wrap-expression">
+        <h1 class="expression"></h1>
+      </div>
+      <div class="fit-text-wrap fit-text-wrap-result">
+        <h1 class="result">0</h1>
+      </div>
+    </div>
+
+    <div class="display-from-to-mode">
+      <div class="fit-text-wrap fit-text-wrap-result first-unit">
+        <h1 class="first-unit-result">0</h1>
+      </div>
+
+      <select id="first-select" class="select"></select>
+      
+      <input type="date" id="first-date" class="calendar">
+
+      <div class="fit-text-wrap fit-text-wrap-result second-unit">
+        <h1 class="second-unit-result">0</h1>
+      </div>
+
+      <select id="second-select" class="select"></select>
+
+      <input type="date" id="second-date" class="calendar">
+
+      <h2 class="addition-result"></h2>
+    </div>
+
+    <div class="numpad">
+      <button class="numpad-button button-clear extended-button-clear">C</button>
+      <button class="numpad-button button-operator">%</button>
+      <button class="numpad-button button-const scientific-mode">π</button>
+      <button class="numpad-button button-const scientific-mode">e</button>
+      <button class="numpad-button button-delete extended-button-delete">
+        <img src="src/Images/delete-icon.svg" alt="del" class="button-delete-img">
+      </button>
+      <button class="numpad-button button-math-expression scientific-mode">sin</button>
+      <button class="numpad-button button-math-expression scientific-mode">cos</button>
+      <button class="numpad-button button-math-expression scientific-mode">tan</button>
+      <button class="numpad-button button-math-expression scientific-mode">|x|</button>
+      <button class="numpad-button button-math-expression scientific-mode">x⁻¹</button>
+      <button class="numpad-button button-operator scientific-mode">x²</button>
+      <button class="numpad-button button-brackets scientific-mode">(</button>
+      <button class="numpad-button button-brackets scientific-mode">)</button>
+      <button class="numpad-button button-math-expression scientific-mode">√</button>
+      <button class="numpad-button button-operator">÷</button>
+      <button class="numpad-button button-operator scientific-mode">xʸ</button>
+      <button class="numpad-button button-number">7</button>
+      <button class="numpad-button button-number">8</button>
+      <button class="numpad-button button-number">9</button>
+      <button class="numpad-button button-operator">×</button>
+      <button class="numpad-button button-math-expression scientific-mode">log</button>
+      <button class="numpad-button button-number">4</button>
+      <button class="numpad-button button-number">5</button>
+      <button class="numpad-button button-number">6</button>
+      <button class="numpad-button button-operator">+</button>
+      <button class="numpad-button button-math-expression scientific-mode">ln</button>
+      <button class="numpad-button button-number">1</button>
+      <button class="numpad-button button-number">2</button>
+      <button class="numpad-button button-number">3</button>
+      <button class="numpad-button button-operator">-</button>
+      <button class="numpad-button button-switchToNegative scientific-mode">+/-</button>
+      <button class="numpad-button button-number extended-button-zero">0</button>
+      <button class="numpad-button button-decimal">.</button>
+      <button class="numpad-button button-equals">=</button>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/gh/STRML/textFit@v2.4.0/textFit.min.js"></script>
+  <script type="module" src="src/script.js"></script>
+</body>
+</html>
