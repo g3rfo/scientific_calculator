@@ -8,7 +8,7 @@
 
 <h2>🌐 Live Demo</h2>
 <p>
-  🔗 <a href="https://g3rfo.github.io/scientific-calculator/">
+  🔗 <a href="https://g3rfo.github.io/scientific_calculator/">
   <strong>View on GitHub Pages</strong></a>
 </p>
 <br>
