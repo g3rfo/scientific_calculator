@@ -1,6 +1,8 @@
 
-// Get API key from environment variable (defined in vite.config.js)
-const apiKey = import.meta.env.VITE_API_KEY;
+// Get API key from environment variable
+// const apiKey = import.meta.env.VITE_API_KEY;
+// unsaved currency API to poject work on github pages
+const apiKey = '5352e75a23af59ad2fe1a9c86d300bd6';
 
 // top-bar
 const openModeSelection = document.querySelector('.change-mode-button');
